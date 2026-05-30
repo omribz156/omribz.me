@@ -17,7 +17,6 @@ interface Site {
   postPerIndex: number;
   postPerPage: number;
   scheduledPostMargin: number;
-  showArchives: boolean;
   showBackButton: boolean;
   editPost: {
     enabled: boolean;
@@ -31,26 +30,25 @@ interface Site {
 
 // Site configuration
 export const SITE: Site = {
-  website: "https://steipete.me/",
-  author: "Peter Steinberger",
-  profile: "https://steipete.me/about",
-  desc: "AI-powered tools from Swift roots to web frontiers. Every commit lands on GitHub for you to fork & remix.",
-  title: "Peter Steinberger",
-  ogImage: "peter-avatar.jpg",
+  website: "https://omribz.me/",
+  author: "Omri Ben Zvi",
+  profile: "https://omribz.me/about",
+  desc: "Information security analyst focused on production reliability, incident response, and agentic engineering.",
+  title: "Omri Ben Zvi",
+  ogImage: "omri-avatar.jpg",
   lightAndDarkMode: true,
   postPerIndex: 10,
   postPerPage: 10,
   scheduledPostMargin: 15 * 60 * 1000,
-  showArchives: false,
   showBackButton: false,
   editPost: {
-    enabled: true,
+    enabled: false,
     text: "Edit on GitHub",
-    url: "https://github.com/steipete/steipete.me/edit/main/",
+    url: "https://github.com/omribz156/omribz.me/edit/main/",
   },
   dynamicOgImage: true,
   lang: "en",
-  timezone: "America/Los_Angeles",
+  timezone: "Asia/Jerusalem",
 };
 
 export const SITE_TITLE = SITE.title;
@@ -60,7 +58,7 @@ export const SITE_DESCRIPTION = SITE.desc;
 export const NAV_LINKS: SocialLink[] = [
   {
     href: "/",
-    label: "Blog",
+    label: "Home",
   },
   {
     href: "/about",
@@ -71,16 +69,12 @@ export const NAV_LINKS: SocialLink[] = [
 // Social media links
 export const SOCIAL_LINKS: SocialLink[] = [
   {
-    href: "https://github.com/steipete",
+    href: "https://github.com/omribz156",
     label: "GitHub",
   },
   {
-    href: "https://twitter.com/steipete",
-    label: "Twitter",
-  },
-  {
-    href: "https://bsky.app/profile/steipete.me",
-    label: "BlueSky",
+    href: "https://x.com/omriBzvi",
+    label: "X",
   },
   {
     href: "/rss.xml",
@@ -91,8 +85,7 @@ export const SOCIAL_LINKS: SocialLink[] = [
 // Icon map for social media
 export const ICON_MAP: Record<string, string> = {
   GitHub: "github",
-  Twitter: "twitter",
-  BlueSky: "bsky",
+  X: "twitter",
   RSS: "rss",
   Email: "mail",
 };

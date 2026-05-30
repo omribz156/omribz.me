@@ -2,14 +2,17 @@
 import { type CollectionEntry, getCollection, render } from "astro:content";
 import BlogPostLayout from "../../layouts/BlogPostLayout.astro";
 import { calculateReadingTime } from "../../utils/readingTime";
+import { postMatchesLocale, postSlugForLocale } from "../../utils/postLocale";
 
 export async function getStaticPaths() {
-  const posts = await getCollection("blog");
+  const posts = (await getCollection("blog", ({ data }) => !data.draft)).filter((post) =>
+    postMatchesLocale(post, "en"),
+  );
 
   return posts
     .map((post) => {
       // Use post.id as the slug (e.g., "2012/dont-call-willchangevalueforkey")
-      const postSlug = post.id;
+      const postSlug = postSlugForLocale(post);
 
       // Skip posts without id
       if (!postSlug) {

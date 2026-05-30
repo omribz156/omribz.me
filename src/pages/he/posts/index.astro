@@ -3,36 +3,35 @@ import { getCollection } from "astro:content";
 import Card from "@/components/Card.astro";
 import Footer from "@/components/Footer.astro";
 import Header from "@/components/Header.astro";
-import { SITE } from "@/consts";
 import Layout from "@/layouts/Layout.astro";
 import getPostsByGroupCondition from "@/utils/getPostsByGroupCondition";
 import { postMatchesLocale } from "@/utils/postLocale";
 
 const posts = (await getCollection("blog", ({ data }) => !data.draft)).filter((post) =>
-  postMatchesLocale(post, "en"),
+  postMatchesLocale(post, "he"),
 );
 
 const months = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
+  "ינואר",
+  "פברואר",
+  "מרץ",
+  "אפריל",
+  "מאי",
+  "יוני",
+  "יולי",
+  "אוגוסט",
+  "ספטמבר",
+  "אוקטובר",
+  "נובמבר",
+  "דצמבר",
 ];
 ---
 
-<Layout title={`Posts | ${SITE.title}`} description="Posts by Omri Ben Zvi.">
+<Layout title={`פוסטים | Omri Ben Zvi`} description="פוסטים מאת עומרי בן צבי.">
   <Header />
   <main id="main-content" class="mx-auto w-full max-w-3xl px-4 pb-4">
-    <h1 class="text-2xl font-semibold sm:text-3xl mt-8">All Posts</h1>
-    <p class="mt-2 mb-6 italic">Coming soon.</p>
+    <h1 class="text-2xl font-semibold sm:text-3xl mt-8">כל הפוסטים</h1>
+    <p class="mt-2 mb-6 italic">בקרוב.</p>
     {
       Object.entries(
         getPostsByGroupCondition(posts, (post) => {
@@ -65,10 +64,7 @@ const months = [
                       .sort((a, b) => {
                         const aDate = a.data.pubDatetime || new Date();
                         const bDate = b.data.pubDatetime || new Date();
-                        return (
-                          Math.floor(new Date(bDate).getTime() / 1000) -
-                          Math.floor(new Date(aDate).getTime() / 1000)
-                        );
+                        return Math.floor(new Date(bDate).getTime() / 1000) - Math.floor(new Date(aDate).getTime() / 1000);
                       })
                       .map((data) => (
                         <Card {...data} />

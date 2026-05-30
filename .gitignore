@@ -19,6 +19,12 @@ pnpm-debug.log*
 # macOS-specific files
 .DS_Store
 
+# local source context, not deployed
+/*.pdf
+/omris-links.md
+/C5BDD48D-D1C1-48F0-A05D-04E7952494A0.jpeg
+/C5BDD48D-D1C1-48F0-A05D-04E7952494A0.png
+
 # Vercel
 .vercel/
 

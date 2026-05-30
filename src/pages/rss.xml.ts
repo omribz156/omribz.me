@@ -3,9 +3,10 @@ import rss from "@astrojs/rss";
 import { SITE } from "@/config";
 import { getPath } from "@/utils/getPath";
 import getSortedPosts from "@/utils/getSortedPosts";
+import { postMatchesLocale } from "@/utils/postLocale";
 
 export async function GET() {
-  const posts = await getCollection("blog");
+  const posts = (await getCollection("blog")).filter((post) => postMatchesLocale(post, "en"));
   const sortedPosts = getSortedPosts(posts);
   return rss({
     title: SITE.title,

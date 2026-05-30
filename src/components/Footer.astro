@@ -1,4 +1,5 @@
 ---
+import { getLocale } from "@/utils/i18n";
 import Hr from "./Hr.astro";
 import Socials from "./Socials.astro";
 
@@ -7,6 +8,11 @@ export interface Props {
 }
 
 const { noMarginTop = false } = Astro.props;
+const locale = getLocale(Astro.url.pathname);
+const footerText =
+  locale === "he"
+    ? "אפשר לגנוב את האתר ← CC BY 4.0 · Code MIT"
+    : "Steal this site ➜ CC BY 4.0 · Code MIT";
 ---
 
 <footer class:list={["w-full", { "mt-auto": !noMarginTop }]}>
@@ -16,8 +22,8 @@ const { noMarginTop = false } = Astro.props;
   >
     <Socials centered />
     <div class="my-2 flex flex-col items-center whitespace-nowrap sm:flex-row">
-      <a href="https://github.com/steipete/steipete.me" target="_blank" rel="noopener noreferrer" class="hover:text-accent">
-        Steal this post ➜ CC BY 4.0 · Code MIT
+      <a href="https://github.com/omribz156/omribz.me" target="_blank" rel="noopener noreferrer" class="hover:text-accent">
+        {footerText}
       </a>
     </div>
   </div>

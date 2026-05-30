@@ -1,0 +1,25 @@
+---
+import { type CollectionEntry, getCollection } from "astro:content";
+import PostDetails from "../../../layouts/PostDetails.astro";
+import { postMatchesLocale, postSlugForLocale } from "../../../utils/postLocale";
+
+export async function getStaticPaths() {
+  const posts = (await getCollection("blog", ({ data }) => !data.draft)).filter((post) =>
+    postMatchesLocale(post, "he"),
+  );
+
+  return posts.map((post) => ({
+    params: { slug: postSlugForLocale(post) },
+    props: { post, yearSlug: postSlugForLocale(post) },
+  }));
+}
+
+type Props = {
+  post: CollectionEntry<"blog">;
+};
+
+const { post } = Astro.props;
+const posts = (await getCollection("blog")).filter((candidate) => postMatchesLocale(candidate, "he"));
+---
+
+<PostDetails post={post} posts={posts} />

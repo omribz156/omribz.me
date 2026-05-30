@@ -1,6 +1,7 @@
 ---
 import { ClientRouter } from "astro:transitions";
 import { SITE } from "@/config";
+import { getLocale, localizedPath, localeMeta } from "@/utils/i18n";
 import "@/styles/global.css";
 import Analytics from "@/components/Analytics.astro";
 
@@ -31,6 +32,11 @@ const {
 } = Astro.props;
 
 const socialImageURL = new URL(ogImage, Astro.url);
+const locale = getLocale(Astro.url.pathname);
+const htmlLang = localeMeta[locale].lang;
+const htmlDir = localeMeta[locale].dir;
+const englishURL = new URL(localizedPath(Astro.url.pathname, "en"), Astro.url);
+const hebrewURL = new URL(localizedPath(Astro.url.pathname, "he"), Astro.url);
 
 const structuredData = {
   "@context": "https://schema.org",
@@ -50,13 +56,19 @@ const structuredData = {
 ---
 
 <!doctype html>
-<html lang=`${SITE.lang ?? "en"}` class={`${scrollSmooth && "scroll-smooth"}`}>
+<html lang={htmlLang} dir={htmlDir} class={`${scrollSmooth && "scroll-smooth"}`}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <meta name="view-transition" content="same-origin" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
     <link rel="canonical" href={canonicalURL} />
+    <link rel="alternate" hreflang="en" href={englishURL} />
+    <link rel="alternate" hreflang="he" href={hebrewURL} />
+    <link rel="alternate" hreflang="x-default" href={englishURL} />
     <meta name="generator" content={Astro.generator} />
 
     <!-- General Meta Tags -->
@@ -130,17 +142,6 @@ const structuredData = {
     <ClientRouter />
 
     <script is:inline src="/toggle-theme.js"></script>
-    
-    <!-- Domain-based markdown redirect -->
-    <script is:inline>
-      // Check if we're on steipete.md domain
-      const hostname = window.location.hostname;
-      if ((hostname === 'steipete.md' || hostname === 'www.steipete.md') && !window.location.pathname.endsWith('.md')) {
-        // Redirect to the .md version of the current page
-        const mdPath = window.location.pathname === '/' ? '/index.md' : window.location.pathname + '.md';
-        window.location.replace(mdPath + window.location.search + window.location.hash);
-      }
-    </script>
     
     <!-- Twitter Widget Script -->
     <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>

@@ -1,10 +1,30 @@
-# Peter Steinberger's Personal Website
+# Omri Ben Zvi's Personal Website
 
-This is the source code for my personal website, built with [Astro](https://astro.build) and deployed on [Vercel](https://vercel.com).
+This is the source code for [omribz.me](https://omribz.me), built with [Astro](https://astro.build) and intended for deployment on [Vercel](https://vercel.com).
 
 ## About
 
-I'm Peter Steinberger, an iOS developer, entrepreneur, and open source contributor. This website hosts my personal blog and information about my work.
+I'm Omri Ben Zvi, an information security analyst focused on production reliability, incident response, and agentic engineering.
+
+This site is intentionally profile-first and blog-ready. The blog can stay hollow until there is real writing. No fake content. Nice.
+
+## Languages
+
+English is the default route. Hebrew lives under `/he`.
+
+When adding posts, create one file per language and pair them with the same `translationKey`:
+
+```md
+---
+title: "Example"
+description: "Short summary"
+pubDatetime: 2026-05-30
+lang: "en"
+translationKey: "example"
+---
+```
+
+Hebrew posts should use `lang: "he"` and can live under `src/content/blog/he/`.
 
 ## Project Structure
 
@@ -49,8 +69,10 @@ This repository uses dual licensing:
 - **Documentation & Blog Posts**: Licensed under [CC BY 4.0](http://creativecommons.org/licenses/by/4.0/)
 - **Code & Code Snippets**: Licensed under the [MIT License](LICENSE)
 
+Upstream code attribution is preserved for [steipete/steipete.me](https://github.com/steipete/steipete.me). Original site content in this fork belongs to Omri Ben Zvi unless otherwise noted.
+
 See the [LICENSE](LICENSE) file for full details.
 
 ## Special Thanks
 
-Special thanks to [Sat Naing](https://github.com/satnaing) for creating the excellent [AstroPaper theme](https://astro-paper.pages.dev/) that served as the foundation for this website. Their thoughtful design and clean architecture made it a joy to build upon.
+Forked from [Peter Steinberger's personal website](https://github.com/steipete/steipete.me), which itself builds on [AstroPaper](https://astro-paper.pages.dev/) by [Sat Naing](https://github.com/satnaing).

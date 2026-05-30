@@ -1,17 +1,17 @@
 import type { APIRoute } from "astro";
 
 export const GET: APIRoute = async () => {
-  const markdownContent = `# Omri Ben Zvi
+  const markdownContent = `# עומרי בן צבי
 
-Information security analyst focused on production reliability, incident response, and agentic engineering.
+אנליסט אבטחת מידע עם מיקוד באמינות מערכות, תגובה לאירועים והנדסה מונחית סוכנים.
 
-## Navigation
+## ניווט
 
-- [About](/about.md)
-- [Recent Posts](/posts.md)
-- [RSS Feed](/rss.xml)
+- [אודות](/he/about.md)
+- [פוסטים](/he/posts.md)
+- [RSS](/rss.xml)
 
-## Links
+## קישורים
 
 - X: [@omriBzvi](https://x.com/omriBzvi)
 - GitHub: [@omribz156](https://github.com/omribz156)
@@ -20,7 +20,7 @@ Information security analyst focused on production reliability, incident respons
 
 ---
 
-*This is the markdown-only version of omribz.me.*`;
+*זו גרסת Markdown של omribz.me בעברית.*`;
 
   return new Response(markdownContent, {
     status: 200,

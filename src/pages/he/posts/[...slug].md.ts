@@ -5,7 +5,7 @@ import { postMatchesLocale, postSlugForLocale } from "@/utils/postLocale";
 
 export async function getStaticPaths() {
   const posts = (await getCollection("blog", ({ data }) => !data.draft)).filter((post) =>
-    postMatchesLocale(post, "en"),
+    postMatchesLocale(post, "he"),
   );
 
   return posts.map((post) => ({
@@ -17,11 +17,7 @@ export async function getStaticPaths() {
 export const GET: APIRoute = async ({ props }) => {
   const { post } = props as { post: CollectionEntry<"blog"> };
 
-  // Read the raw markdown content
-  const rawContent = post.body;
-
-  // Return the markdown content with proper headers
-  return new Response(rawContent, {
+  return new Response(post.body, {
     status: 200,
     headers: {
       "Content-Type": "text/markdown; charset=utf-8",

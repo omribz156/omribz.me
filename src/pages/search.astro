@@ -5,19 +5,54 @@ import Header from "@/components/Header.astro";
 import { SITE } from "@/config";
 import Layout from "@/layouts/Layout.astro";
 import Main from "@/layouts/Main.astro";
+import { getLocale } from "@/utils/i18n";
 
 const backUrl = SITE.showBackButton ? `${Astro.url.pathname}` : "/";
+const locale = getLocale(Astro.url.pathname);
+const labels = {
+  en: {
+    title: "Search",
+    description: "Search posts on omribz.me.",
+    pageDesc: "Search any article ...",
+    placeholder: "Search posts, e.g. 'the 3 waves of AI'",
+  },
+  he: {
+    title: "חיפוש",
+    description: "חיפוש פוסטים באתר omribz.me.",
+    pageDesc: "חיפוש בכל המאמרים ...",
+    placeholder: "חיפוש פוסטים, למשל ״שלושת גלי ה-AI״",
+  },
+}[locale];
 ---
 
-<Layout title={`Search | ${SITE.title}`} description="Search through Peter Steinberger's blog posts on iOS development, Swift, and open source projects.">
+<Layout title={`${labels.title} | ${SITE.title}`} description={labels.description}>
   <Header />
-  <Main pageTitle="Search" pageDesc="Search any article ...">
-    <div id="pagefind-search" transition:persist data-backurl={backUrl}></div>
+  <Main pageTitle={labels.title} pageDesc={labels.pageDesc}>
+    <div id="pagefind-search" transition:persist data-backurl={backUrl} data-placeholder={labels.placeholder}></div>
   </Main>
   <Footer />
 </Layout>
 
 <script>
+  const searchPlaceholders = {
+    en: "Search posts, e.g. 'the 3 waves of AI'",
+    he: "חיפוש פוסטים, למשל ״שלושת גלי ה-AI״",
+  };
+
+  function getSearchLocale() {
+    return window.location.pathname === "/he/search" || window.location.pathname.startsWith("/he/search/")
+      ? "he"
+      : "en";
+  }
+
+  function updateSearchPlaceholder() {
+    const searchInput = document.querySelector(".pagefind-ui__search-input") as HTMLInputElement;
+
+    if (searchInput) {
+      searchInput.placeholder = searchPlaceholders[getSearchLocale()];
+    }
+  }
+
   function initSearch() {
     const pageFindSearch: HTMLElement | null =
       document.querySelector("#pagefind-search");
@@ -71,7 +106,7 @@ const backUrl = SITE.showBackButton ? `${Astro.url.pathname}` : "/";
       // Auto-focus the search input and add placeholder
       if (searchInput) {
         searchInput.focus();
-        searchInput.placeholder = "Search posts, e.g. 'Swift concurrency'";
+        updateSearchPlaceholder();
       }
       searchInput?.addEventListener("input", resetSearchParam);
       clearButton?.addEventListener("click", resetSearchParam);
@@ -88,7 +123,10 @@ const backUrl = SITE.showBackButton ? `${Astro.url.pathname}` : "/";
     const pagefindSearch = document.querySelector("#pagefind-search");
 
     // if pagefind search form already exists, don't initialize search component
-    if (pagefindSearch && pagefindSearch.querySelector("form")) return;
+    if (pagefindSearch && pagefindSearch.querySelector("form")) {
+      updateSearchPlaceholder();
+      return;
+    }
 
     initSearch();
   });

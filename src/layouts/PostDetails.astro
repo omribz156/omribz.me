@@ -77,9 +77,10 @@ const layoutProps = {
 
 /* ========== Prev/Next Posts ========== */
 
-const allPosts = posts.map(({ data: { title }, id }) => ({
+const allPosts = posts.map(({ data: { title }, id, filePath }) => ({
   slug: id,
   title,
+  path: getPath(id, filePath),
 }));
 
 const currentPostIndex = allPosts.findIndex((a) => a.slug === post.id);
@@ -181,13 +182,13 @@ const wordCount = (post.body ?? "").split(/\s+/).length;
     <div 
       data-pagefind-ignore 
       class="flex flex-col sm:flex-row justify-between gap-6"
-      data-prev-url={prevPost ? `/posts/${prevPost.slug}` : ''}
-      data-next-url={nextPost ? `/posts/${nextPost.slug}` : ''}
+      data-prev-url={prevPost ? prevPost.path : ''}
+      data-next-url={nextPost ? nextPost.path : ''}
     >
       {
         prevPost && (
           <a
-            href={`/posts/${prevPost.slug}`}
+            href={prevPost.path}
             class="flex gap-2 hover:opacity-75 items-start"
             id="prev-post-link"
           >
@@ -202,7 +203,7 @@ const wordCount = (post.body ?? "").split(/\s+/).length;
       {
         nextPost && (
           <a
-            href={`/posts/${nextPost.slug}`}
+            href={nextPost.path}
             class="flex gap-2 hover:opacity-75 items-start justify-end text-right ml-auto"
             id="next-post-link"
           >

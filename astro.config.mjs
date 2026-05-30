@@ -30,16 +30,6 @@ export default defineConfig({
   integrations: [
     mdx(),
     sitemap({
-      filter: (page) => {
-        // Always exclude archives if not showing them
-        if (!SITE.showArchives && page.endsWith("/archives")) return false;
-
-        // Optionally exclude tag pages to reduce sitemap bloat
-        // Uncomment the following line to exclude all tag pages:
-        // if (page.includes("/tags/")) return false;
-
-        return true;
-      },
       serialize: (item) => {
         // Remove trailing slash from URL if present (except for root)
         if (item.url.endsWith("/") && item.url !== SITE.website + "/") {
@@ -63,54 +53,20 @@ export default defineConfig({
           item.priority = 0.9;
           item.changefreq = ChangeFreqEnum.WEEKLY;
         }
-        // Recent blog posts (2024-2025)
-        else if (url.includes("/posts/2025") || url.includes("/posts/2024")) {
-          item.priority = 0.8;
-          item.changefreq = ChangeFreqEnum.WEEKLY;
-        }
-        // Somewhat recent posts (2020-2023)
-        else if (
-          url.includes("/posts/2023") ||
-          url.includes("/posts/2022") ||
-          url.includes("/posts/2021") ||
-          url.includes("/posts/2020")
-        ) {
-          item.priority = 0.6;
-          item.changefreq = ChangeFreqEnum.MONTHLY;
-        }
-        // Older posts (2010-2019)
-        else if (url.includes("/posts/201")) {
-          item.priority = 0.4;
-          item.changefreq = ChangeFreqEnum.YEARLY;
-        }
-        // Tag pages - low priority
-        else if (url.includes("/tags/")) {
-          item.priority = 0.1;
-          item.changefreq = ChangeFreqEnum.YEARLY;
-        }
-        // Pagination pages
-        else if (url.match(/\/page\/\d+$/)) {
-          item.priority = 0.4;
-          item.changefreq = ChangeFreqEnum.WEEKLY;
-        }
-
-        // Note: lastmod dates for individual posts would need to be set
-        // from the actual post data, which requires more complex integration
-
         return item;
       },
     }),
     react(),
     AstroPWA({
       registerType: "autoUpdate",
-      includeAssets: ["favicon.ico", "peter-avatar.jpg"],
+      includeAssets: ["favicon.ico", "favicon.svg", "apple-touch-icon.png", "omri-avatar.jpg"],
       manifest: {
-        name: "Peter Steinberger",
-        short_name: "steipete",
+        name: "Omri Ben Zvi",
+        short_name: "omribz",
         description:
-          "AI-powered tools from Swift roots to web frontiers. Everything I build is open source.",
-        theme_color: "#006cac",
-        background_color: "#fdfdfd",
+          "Information security analyst focused on production reliability, incident response, and agentic engineering.",
+        theme_color: "#007c89",
+        background_color: "#f7fbfa",
         display: "standalone",
         orientation: "portrait",
         scope: "/",
@@ -122,15 +78,15 @@ export default defineConfig({
             type: "image/x-icon",
           },
           {
-            src: "peter-avatar.jpg",
+            src: "icon-192.png",
             sizes: "192x192",
-            type: "image/jpeg",
+            type: "image/png",
             purpose: "any",
           },
           {
-            src: "peter-avatar.jpg",
+            src: "icon-512.png",
             sizes: "512x512",
-            type: "image/jpeg",
+            type: "image/png",
             purpose: "any maskable",
           },
         ],

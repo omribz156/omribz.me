@@ -1,24 +1,57 @@
 ---
-import IconArchive from "@/assets/icons/IconArchive.svg";
 import IconMenuDeep from "@/assets/icons/IconMenuDeep.svg";
 import IconMoon from "@/assets/icons/IconMoon.svg";
 import IconSearch from "@/assets/icons/IconSearch.svg";
 import IconSunHigh from "@/assets/icons/IconSunHigh.svg";
 import IconX from "@/assets/icons/IconX.svg";
 import { SITE } from "@/config";
+import {
+  alternateLocale,
+  alternateLocalePath,
+  getLocale,
+  localizedPath,
+  localeMeta,
+  stripLocale,
+} from "@/utils/i18n";
 import Hr from "./Hr.astro";
 import LinkButton from "./LinkButton.astro";
 
 const { pathname } = Astro.url;
+const locale = getLocale(pathname);
+const otherLocale = alternateLocale(locale);
+const labels = {
+  en: {
+    brand: SITE.title,
+    skip: "Skip to content",
+    posts: "Posts",
+    about: "About",
+    search: "Search",
+    openMenu: "Open Menu",
+    closeMenu: "Close Menu",
+    theme: "Toggles light & dark",
+    language: "Switch to Hebrew",
+  },
+  he: {
+    brand: "עומרי בן צבי",
+    skip: "דלג לתוכן",
+    posts: "פוסטים",
+    about: "אודות",
+    search: "חיפוש",
+    openMenu: "פתח תפריט",
+    closeMenu: "סגור תפריט",
+    theme: "החלפת מצב בהיר וכהה",
+    language: "Switch to English",
+  },
+}[locale];
 
 // Remove trailing slash from current pathname if exists
 const currentPath = pathname.endsWith("/") && pathname !== "/" ? pathname.slice(0, -1) : pathname;
 
 const isActive = (path: string) => {
-  const currentPathArray = currentPath.split("/").filter((p) => p.trim());
-  const pathArray = path.split("/").filter((p) => p.trim());
+  const currentPathArray = stripLocale(currentPath).split("/").filter((p) => p.trim());
+  const pathArray = stripLocale(path).split("/").filter((p) => p.trim());
 
-  return currentPath === path || currentPathArray[0] === pathArray[0];
+  return stripLocale(currentPath) === stripLocale(path) || currentPathArray[0] === pathArray[0];
 };
 ---
 
@@ -28,7 +61,7 @@ const isActive = (path: string) => {
     href="#main-content"
     class="absolute -top-full left-16 z-50 bg-background px-3 py-2 text-accent backdrop-blur-lg transition-all focus:top-4"
   >
-    Skip to content
+    {labels.skip}
   </a>
   <div
     id="nav-container"
@@ -39,10 +72,10 @@ const isActive = (path: string) => {
       class="relative flex w-full items-baseline justify-between bg-background p-4 sm:items-center sm:py-6"
     >
       <a
-        href="/"
+        href={localizedPath("/", locale)}
         class="absolute py-1 text-2xl leading-7 font-semibold whitespace-nowrap sm:static"
       >
-        {SITE.title}
+        {labels.brand}
       </a>
       <nav
         id="nav-menu"
@@ -51,9 +84,11 @@ const isActive = (path: string) => {
         <button
           id="menu-btn"
           class="focus-outline self-end p-2 sm:hidden"
-          aria-label="Open Menu"
+          aria-label={labels.openMenu}
           aria-expanded="false"
           aria-controls="menu-items"
+          data-open-label={labels.openMenu}
+          data-close-label={labels.closeMenu}
         >
           <IconX id="close-icon" class="hidden" />
           <IconMenuDeep id="menu-icon" />
@@ -68,53 +103,46 @@ const isActive = (path: string) => {
           ]}
         >
           <li class="col-span-2">
-            <a href="/posts" class:list={{ "active-nav": isActive("/posts") }}>
-              Posts
+            <a
+              href={localizedPath("/posts", locale)}
+              class:list={{ "active-nav": isActive(localizedPath("/posts", locale)) }}
+            >
+              {labels.posts}
             </a>
           </li>
-          <!-- <li class="col-span-2">
-            <a href="/tags" class:list={{ "active-nav": isActive("/tags") }}>
-              Tags
-            </a>
-          </li> -->
           <li class="col-span-2">
-            <a href="/about" class:list={{ "active-nav": isActive("/about") }}>
-              About
+            <a
+              href={localizedPath("/about", locale)}
+              class:list={{ "active-nav": isActive(localizedPath("/about", locale)) }}
+            >
+              {labels.about}
             </a>
           </li>
-          {
-            SITE.showArchives && (
-              <li class="col-span-2">
-                <LinkButton
-                  href="/archives"
-                  class:list={[
-                    "focus-outline flex justify-center p-3 sm:p-1",
-                    {
-                      "active-nav [&>svg]:stroke-accent": isActive("/archives"),
-                    },
-                  ]}
-                  ariaLabel="archives"
-                  title="Archives"
-                >
-                  <IconArchive class="hidden sm:inline-block" />
-                  <span class="sm:sr-only">Archives</span>
-                </LinkButton>
-              </li>
-            )
-          }
           <li class="col-span-1 flex items-center justify-center">
             <LinkButton
-              href="/search"
+              href={localizedPath("/search", locale)}
               class:list={[
                 "focus-outline flex p-3 sm:p-1",
-                { "[&>svg]:stroke-accent": isActive("/search") },
+                { "[&>svg]:stroke-accent": isActive(localizedPath("/search", locale)) },
               ]}
-              ariaLabel="search"
-              title="Search"
+              ariaLabel={labels.search.toLowerCase()}
+              title={labels.search}
             >
               <IconSearch />
-              <span class="sr-only">Search</span>
+              <span class="sr-only">{labels.search}</span>
             </LinkButton>
+          </li>
+          <li class="col-span-1 flex items-center justify-center">
+            <a
+              href={alternateLocalePath(pathname)}
+              class="focus-outline flex size-12 items-center justify-center p-3 text-sm font-semibold hover:text-accent sm:size-8 sm:p-1"
+              hreflang={localeMeta[otherLocale].lang}
+              lang={localeMeta[otherLocale].lang}
+              title={labels.language}
+              aria-label={labels.language}
+            >
+              {localeMeta[otherLocale].shortLabel}
+            </a>
           </li>
           {
             SITE.lightAndDarkMode && (
@@ -122,7 +150,7 @@ const isActive = (path: string) => {
                 <button
                   id="theme-btn"
                   class="focus-outline relative size-12 p-4 sm:size-8 hover:[&>svg]:stroke-accent"
-                  title="Toggles light & dark"
+                  title={labels.theme}
                   aria-label="auto"
                   aria-live="polite"
                 >
@@ -140,30 +168,54 @@ const isActive = (path: string) => {
 </header>
 
 <script>
-  function toggleNav() {
+  function getNavParts() {
     const menuBtn = document.querySelector("#menu-btn");
     const menuItems = document.querySelector("#menu-items");
     const menuIcon = document.querySelector("#menu-icon");
     const closeIcon = document.querySelector("#close-icon");
 
-    if (!menuBtn || !menuItems || !menuIcon || !closeIcon) return;
+    if (!menuBtn || !menuItems || !menuIcon || !closeIcon) return null;
 
-    menuBtn.addEventListener("click", () => {
-      const openMenu = menuBtn.getAttribute("aria-expanded") === "true";
-
-      menuBtn.setAttribute("aria-expanded", openMenu ? "false" : "true");
-      menuBtn.setAttribute("aria-label", openMenu ? "Open Menu" : "Close Menu");
-
-      menuItems.classList.toggle("hidden");
-      menuIcon.classList.toggle("hidden");
-      closeIcon.classList.toggle("hidden");
-    });
+    return { menuBtn, menuItems, menuIcon, closeIcon };
   }
 
-  toggleNav();
+  function resetNav() {
+    const parts = getNavParts();
+    if (!parts) return;
 
-  // Runs on view transitions navigation
-  document.addEventListener("astro:after-swap", () => {
-    toggleNav();
-  });
+    const { menuBtn, menuItems, menuIcon, closeIcon } = parts;
+    menuBtn.setAttribute("aria-expanded", "false");
+    menuBtn.setAttribute("aria-label", menuBtn.dataset.openLabel || "Open Menu");
+    menuItems.classList.add("hidden");
+    menuIcon.classList.remove("hidden");
+    closeIcon.classList.add("hidden");
+  }
+
+  function toggleNav() {
+    const parts = getNavParts();
+    if (!parts) return;
+
+    const { menuBtn, menuItems, menuIcon, closeIcon } = parts;
+    const openMenu = menuBtn.getAttribute("aria-expanded") === "true";
+
+    menuBtn.setAttribute("aria-expanded", openMenu ? "false" : "true");
+    menuBtn.setAttribute(
+      "aria-label",
+      openMenu ? menuBtn.dataset.openLabel || "Open Menu" : menuBtn.dataset.closeLabel || "Close Menu",
+    );
+
+    menuItems.classList.toggle("hidden");
+    menuIcon.classList.toggle("hidden");
+    closeIcon.classList.toggle("hidden");
+  }
+
+  if (!window.__omribzMenuHandler) {
+    window.__omribzMenuHandler = true;
+    document.addEventListener("click", (event) => {
+      const target = event.target;
+      if (!(target instanceof Element) || !target.closest("#menu-btn")) return;
+      toggleNav();
+    });
+    document.addEventListener("astro:page-load", resetNav);
+  }
 </script>

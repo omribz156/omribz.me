@@ -12,16 +12,17 @@ import StructuredData from "@/components/StructuredData.astro";
 import { SITE, SOCIALS } from "@/config";
 import Layout from "@/layouts/Layout.astro";
 import getSortedPosts from "@/utils/getSortedPosts";
+import { postMatchesLocale } from "@/utils/postLocale";
 
 const posts = await getCollection("blog");
 
-const sortedPosts = getSortedPosts(posts);
+const sortedPosts = getSortedPosts(posts).filter((post) => postMatchesLocale(post, "en"));
 const posts2025AndLater = sortedPosts.filter(({ data }) => data.pubDatetime.getFullYear() >= 2025);
 const featuredPosts = posts2025AndLater.filter(({ data }) => data.featured);
 const recentPosts = posts2025AndLater.filter(({ data }) => !data.featured);
 ---
 
-<Layout description="Peter Steinberger: AI-powered tools from Swift roots to web frontiers. Every commit lands on GitHub for you to fork & remix.">
+<Layout description="Omri Ben Zvi: information security analyst focused on production reliability, incident response, and agentic engineering.">
   <StructuredData type="WebSite" data={{}} />
   <StructuredData type="Person" data={{}} />
   <Header />
@@ -30,15 +31,15 @@ const recentPosts = posts2025AndLater.filter(({ data }) => !data.featured);
       <div class="flex flex-col sm:flex-row items-start gap-4">
         <a href="/about" class="block mx-auto sm:mx-0 group">
           <img 
-            src="/peter-avatar.jpg" 
-            alt="Peter Steinberger" 
+            src="/omri-avatar.jpg" 
+            alt="Omri Ben Zvi" 
             class="w-40 h-40 rounded-full object-cover flex-shrink-0 transition-all duration-300 group-hover:scale-105 group-hover:shadow-xl"
           />
         </a>
         <div class="flex-1 text-center sm:text-left">
           <div class="flex items-center gap-2 justify-center sm:justify-start">
             <h1 class="my-2 inline-block text-2xl font-bold sm:my-4 sm:text-3xl">
-              Hi, I'm @steipete.
+              Hi, I'm Omri.
             </h1>
             <a
               target="_blank"
@@ -56,8 +57,8 @@ const recentPosts = posts2025AndLater.filter(({ data }) => !data.featured);
             </a>
           </div>
           <p>
-            AI-powered tools from Swift roots to web frontiers.<br />
-            Every commit lands on GitHub for you to fork & remix.
+            Information security analyst working where reliability, ownership, and calm judgment matter.<br />
+            Production incidents, security operations, field-tested systems, and agentic engineering.
           </p>
           {
             // only display if at least one social link is enabled
@@ -102,12 +103,16 @@ const recentPosts = posts2025AndLater.filter(({ data }) => !data.featured);
       )
     }
 
-    <div class="my-8 text-center">
-      <LinkButton href="/posts/">
-        All Posts
-        <IconArrowRight class="inline-block" />
-      </LinkButton>
-    </div>
+    {
+      sortedPosts.length > 0 && (
+        <div class="my-8 text-center">
+          <LinkButton href="/posts/">
+            All Posts
+            <IconArrowRight class="inline-block" />
+          </LinkButton>
+        </div>
+      )
+    }
   </main>
   <Footer />
 </Layout>

@@ -7,7 +7,7 @@ export interface Props {
   size?: "sm" | "lg";
 }
 
-const { tag, tagName, size = "sm" } = Astro.props;
+const { tagName, size = "sm" } = Astro.props;
 ---
 
 <li
@@ -16,11 +16,9 @@ const { tag, tagName, size = "sm" } = Astro.props;
     size === "sm" ? "my-1 underline-offset-4" : "mx-1 my-3 underline-offset-8",
   ]}
 >
-  <a
-    href={`/tags/${tag}/`}
-    transition:name={tag}
+  <span
     class:list={[
-      "relative pr-2 text-lg underline decoration-dashed group-hover:-top-0.5 group-hover:text-accent focus-visible:p-1",
+      "relative pr-2 text-lg",
       { "text-sm": size === "sm" },
     ]}
   >
@@ -32,5 +30,5 @@ const { tag, tagName, size = "sm" } = Astro.props;
       ]}
     />
     &nbsp;<span>{tagName}</span>
-  </a>
+  </span>
 </li>

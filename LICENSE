@@ -1,6 +1,10 @@
 # License
 
-This repository contains two types of content with different licenses:
+This repository contains two types of content with different licenses.
+
+This site is forked from Peter Steinberger's `steipete/steipete.me`.
+Upstream copyright and licensing are preserved below. Original changes and
+new site content in this fork belong to Omri Ben Zvi unless otherwise noted.
 
 ## Documentation and Blog Posts
 
@@ -25,6 +29,7 @@ All code snippets, scripts, and software code in this repository are licensed un
 ### MIT License
 
 Copyright (c) 2025 Peter Steinberger
+Copyright (c) 2026 Omri Ben Zvi
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
