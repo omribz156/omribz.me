@@ -1,35 +1,75 @@
 ---
+import { getLocale } from "@/utils/i18n";
+
 export interface Props {
   variant?: "default" | "compact";
 }
 
 const { variant = "default" } = Astro.props;
+const locale = getLocale(Astro.url.pathname);
+const labels =
+  locale === "he"
+    ? {
+        intro: "רשימות חדשות ישירות למייל.",
+        name: "שם",
+        email: "אימייל",
+        submit: "הרשמה",
+        loading: "רושם...",
+        success: "נרשמת. אשלח עדכונים כשיהיה משהו חדש.",
+        invalid: "צריך כתובת אימייל תקינה.",
+        error: "משהו נתקע. אפשר לנסות שוב עוד רגע.",
+        note: "מעט הודעות. בעיקר דברים שימושיים.",
+      }
+    : {
+        intro: "New notes straight to your inbox.",
+        name: "Your Name",
+        email: "Your Email",
+        submit: "Subscribe",
+        loading: "Subscribing...",
+        success: "You are in. I will send updates when there is something new.",
+        invalid: "Enter a valid email address.",
+        error: "Something got stuck. Try again in a moment.",
+        note: "Low volume. Mostly useful.",
+      };
 ---
 
 <div class={variant === 'default' ? 'newsletter-box bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-lg p-6 my-8' : 'newsletter-compact mt-6'}>
   {variant === 'default' && (
     <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
-      New notes straight to your inbox.
+      {labels.intro}
     </p>
   )}
   
   <form
-    action="mailto:omribz156@gmail.com"
+    action="/api/subscribe"
     method="post"
-    target="_blank"
-    class="flex flex-col sm:flex-row gap-3"
+    class="newsletter-form flex flex-col sm:flex-row gap-3"
+    data-loading={labels.loading}
+    data-success={labels.success}
+    data-invalid={labels.invalid}
+    data-error={labels.error}
   >
     <input type="hidden" name="tag" value="omribz" />
+    <input type="hidden" name="locale" value={locale} />
+    <input type="hidden" name="sourcePath" value={Astro.url.pathname} />
+    <input
+      type="text"
+      name="website"
+      tabindex="-1"
+      autocomplete="off"
+      class="hidden"
+      aria-hidden="true"
+    />
     <input
       type="text"
       name="name"
-      placeholder="Your Name"
+      placeholder={labels.name}
       class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent"
     />
     <input
       type="email"
       name="email"
-      placeholder="Your Email"
+      placeholder={labels.email}
       required
       class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent"
     />
@@ -38,13 +78,14 @@ const { variant = "default" } = Astro.props;
       class="px-6 py-2 bg-accent rounded-md hover:bg-accent/90 transition-colors font-medium whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2"
       style="color: white;"
     >
-      Subscribe
+      {labels.submit}
     </button>
   </form>
+  <p class="newsletter-status mt-3 text-sm text-foreground/70" aria-live="polite"></p>
   
   {variant === 'default' && (
     <p class="text-xs text-gray-500 dark:text-gray-400 mt-3">
-      Low volume. Mostly useful.
+      {labels.note}
     </p>
   )}
 </div>
@@ -58,3 +99,49 @@ const { variant = "default" } = Astro.props;
     }
   }
 </style>
+
+<script>
+  function initNewsletterForms() {
+    document.querySelectorAll(".newsletter-form:not([data-ready])").forEach((form) => {
+      if (!(form instanceof HTMLFormElement)) return;
+
+      form.dataset.ready = "true";
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const status = form.parentElement?.querySelector(".newsletter-status");
+        const submit = form.querySelector("button[type='submit']");
+        const formData = new FormData(form);
+        const email = String(formData.get("email") || "");
+
+        if (!email.includes("@")) {
+          if (status) status.textContent = form.dataset.invalid || "";
+          return;
+        }
+
+        if (submit instanceof HTMLButtonElement) submit.disabled = true;
+        if (status) status.textContent = form.dataset.loading || "";
+
+        try {
+          const response = await fetch(form.action, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(Object.fromEntries(formData.entries())),
+          });
+
+          if (!response.ok) throw new Error("subscribe failed");
+
+          form.reset();
+          if (status) status.textContent = form.dataset.success || "";
+        } catch {
+          if (status) status.textContent = form.dataset.error || "";
+        } finally {
+          if (submit instanceof HTMLButtonElement) submit.disabled = false;
+        }
+      });
+    });
+  }
+
+  initNewsletterForms();
+  document.addEventListener("astro:page-load", initNewsletterForms);
+</script>

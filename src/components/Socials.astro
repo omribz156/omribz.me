@@ -26,11 +26,14 @@ const iconMap = {
   {
     SOCIALS.filter((social) => social.active).map((social) => {
       const IconComponent = iconMap[social.icon as keyof typeof iconMap];
+      const isExternal = social.href.startsWith("http");
       return (
         <LinkButton
           href={social.href}
           class="p-2 hover:rotate-6 sm:p-1"
           title={social.linkTitle}
+          target={isExternal ? "_blank" : undefined}
+          rel={isExternal ? "me noopener noreferrer" : undefined}
         >
           {IconComponent && (
             <IconComponent class="inline-block size-6 scale-125 fill-transparent stroke-current stroke-2 opacity-90 group-hover:fill-transparent sm:scale-110" />

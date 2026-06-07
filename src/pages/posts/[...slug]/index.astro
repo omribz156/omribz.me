@@ -10,7 +10,7 @@ export interface Props {
 }
 
 export async function getStaticPaths() {
-  const posts = (await getCollection("blog", ({ data }) => !data.draft && !data.unlisted)).filter(
+  const posts = (await getCollection("blog", ({ data }) => (import.meta.env.DEV || !data.draft) && !data.unlisted)).filter(
     (post) => postMatchesLocale(post, "en"),
   );
   const postResult = posts.map((post) => ({
@@ -19,7 +19,7 @@ export async function getStaticPaths() {
   }));
 
   // Also include unlisted posts so they can be accessed via direct URL
-  const unlistedPosts = (await getCollection("blog", ({ data }) => !data.draft && data.unlisted)).filter(
+  const unlistedPosts = (await getCollection("blog", ({ data }) => (import.meta.env.DEV || !data.draft) && data.unlisted)).filter(
     (post) => postMatchesLocale(post, "en"),
   );
   const unlistedResult = unlistedPosts.map((post) => ({

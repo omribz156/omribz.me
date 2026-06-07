@@ -4,9 +4,9 @@ import type { APIRoute } from "astro";
 import { postMatchesLocale, postSlugForLocale } from "@/utils/postLocale";
 
 export async function getStaticPaths() {
-  const posts = (await getCollection("blog", ({ data }) => !data.draft)).filter((post) =>
-    postMatchesLocale(post, "he"),
-  );
+  const posts = (
+    await getCollection("blog", ({ data }) => import.meta.env.DEV || !data.draft)
+  ).filter((post) => postMatchesLocale(post, "he"));
 
   return posts.map((post) => ({
     params: { slug: postSlugForLocale(post) },
