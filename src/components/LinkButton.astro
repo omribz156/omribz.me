@@ -7,10 +7,25 @@ export interface Props {
   title?: string;
   target?: string;
   rel?: string;
+  analyticsEvent?: string;
+  analyticsLabel?: string;
+  analyticsTarget?: string;
   disabled?: boolean;
 }
 
-const { id, href, class: className = "", ariaLabel, title, target, rel, disabled = false } = Astro.props;
+const {
+  id,
+  href,
+  class: className = "",
+  ariaLabel,
+  title,
+  target,
+  rel,
+  analyticsEvent,
+  analyticsLabel,
+  analyticsTarget,
+  disabled = false,
+} = Astro.props;
 ---
 
 {
@@ -32,6 +47,9 @@ const { id, href, class: className = "", ariaLabel, title, target, rel, disabled
       title={title}
       target={target}
       rel={rel}
+      data-analytics-event={analyticsEvent}
+      data-analytics-label={analyticsLabel}
+      data-analytics-target={analyticsTarget}
     >
       <slot />
     </a>

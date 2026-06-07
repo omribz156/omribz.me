@@ -34,6 +34,9 @@ const iconMap = {
           title={social.linkTitle}
           target={isExternal ? "_blank" : undefined}
           rel={isExternal ? "me noopener noreferrer" : undefined}
+          analyticsEvent={isExternal ? "outbound_social_click" : undefined}
+          analyticsLabel={social.label}
+          analyticsTarget={social.href}
         >
           {IconComponent && (
             <IconComponent class="inline-block size-6 scale-125 fill-transparent stroke-current stroke-2 opacity-90 group-hover:fill-transparent sm:scale-110" />

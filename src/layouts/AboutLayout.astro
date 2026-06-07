@@ -1,6 +1,7 @@
 ---
 import Footer from "@/components/Footer.astro";
 import Header from "@/components/Header.astro";
+import StructuredData from "@/components/StructuredData.astro";
 import { SITE } from "@/config";
 import Layout from "./Layout.astro";
 
@@ -16,6 +17,7 @@ const isHebrew = Astro.url.pathname.startsWith("/he");
 ---
 
 <Layout title={`${frontmatter.title} | ${SITE.title}`} description={frontmatter.description}>
+  <StructuredData type="Person" data={{}} />
   <Header />
   <main id="main-content" class="mx-auto w-full max-w-3xl px-4 pb-12">
     <section id="about" class="prose mb-28 max-w-3xl prose-img:border-0 mt-8">

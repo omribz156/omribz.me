@@ -133,6 +133,17 @@ const labels =
 
           form.reset();
           if (status) status.textContent = form.dataset.success || "";
+          window.dispatchEvent(
+            new CustomEvent("omribz:analytics", {
+              detail: {
+                name: "newsletter_subscribe",
+                properties: {
+                  locale: String(formData.get("locale") || ""),
+                  path: String(formData.get("sourcePath") || window.location.pathname),
+                },
+              },
+            }),
+          );
         } catch {
           if (status) status.textContent = form.dataset.error || "";
         } finally {

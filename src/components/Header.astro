@@ -140,6 +140,9 @@ const isActive = (path: string) => {
               lang={localeMeta[otherLocale].lang}
               title={labels.language}
               aria-label={labels.language}
+              data-analytics-event="language_switch"
+              data-analytics-label={locale}
+              data-analytics-target={otherLocale}
             >
               {localeMeta[otherLocale].shortLabel}
             </a>

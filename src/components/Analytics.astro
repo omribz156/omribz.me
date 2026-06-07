@@ -4,8 +4,8 @@
 
 <!-- Vercel Analytics -->
 <script>
-  if (typeof window !== 'undefined' && import.meta.env.PROD) {
-    import('@vercel/analytics').then(({ inject }) => {
+  if (typeof window !== "undefined" && import.meta.env.PROD) {
+    import("@vercel/analytics").then(({ inject }) => {
       inject();
     });
   }
@@ -13,9 +13,43 @@
 
 <!-- Vercel Speed Insights -->
 <script>
-  if (typeof window !== 'undefined' && import.meta.env.PROD) {
-    import('@vercel/speed-insights').then(({ injectSpeedInsights }) => {
+  if (typeof window !== "undefined" && import.meta.env.PROD) {
+    import("@vercel/speed-insights").then(({ injectSpeedInsights }) => {
       injectSpeedInsights();
+    });
+  }
+</script>
+
+<!-- Lightweight custom events -->
+<script>
+  function trackOmribzEvent(name, properties = {}) {
+    if (!import.meta.env.PROD || !name) return;
+
+    import("@vercel/analytics").then(({ track }) => {
+      track(name, properties);
+    });
+  }
+
+  if (!window.__omribzAnalyticsHandler) {
+    window.__omribzAnalyticsHandler = true;
+
+    document.addEventListener("click", (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+
+      const link = target.closest("[data-analytics-event]");
+      if (!(link instanceof HTMLElement)) return;
+
+      trackOmribzEvent(link.dataset.analyticsEvent || "", {
+        label: link.dataset.analyticsLabel || "",
+        target: link.dataset.analyticsTarget || "",
+        path: window.location.pathname,
+      });
+    });
+
+    window.addEventListener("omribz:analytics", (event) => {
+      if (!(event instanceof CustomEvent)) return;
+      trackOmribzEvent(event.detail?.name, event.detail?.properties);
     });
   }
 </script>
