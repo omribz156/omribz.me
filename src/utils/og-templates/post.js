@@ -104,6 +104,10 @@ import loadGoogleFonts from "../loadGoogleFont";
 //     </div>`;
 
 export default async (post) => {
+  const isHebrew = post.data.lang === "he";
+  const fontFamily = isHebrew ? "Noto Sans Hebrew" : "IBM Plex Mono";
+  const title = isHebrew ? [...post.data.title].reverse().join("") : post.data.title;
+
   return satori(
     {
       type: "div",
@@ -115,6 +119,7 @@ export default async (post) => {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
+          fontFamily,
         },
         children: [
           {
@@ -169,8 +174,11 @@ export default async (post) => {
                           fontWeight: "bold",
                           maxHeight: "84%",
                           overflow: "hidden",
+                          direction: isHebrew ? "rtl" : "ltr",
+                          textAlign: isHebrew ? "right" : "left",
+                          lineHeight: 1.15,
                         },
-                        children: post.data.title,
+                        children: title,
                       },
                     },
                     {

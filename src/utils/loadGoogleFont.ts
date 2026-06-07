@@ -26,16 +26,20 @@ async function loadGoogleFont(font: string, text: string, weight: number): Promi
 async function loadGoogleFonts(
   text: string,
 ): Promise<Array<{ name: string; data: ArrayBuffer; weight: number; style: string }>> {
+  const containsHebrew = /[\u0590-\u05ff]/.test(text);
+  const fontFamily = containsHebrew
+    ? { name: "Noto Sans Hebrew", font: "Noto+Sans+Hebrew" }
+    : { name: "IBM Plex Mono", font: "IBM+Plex+Mono" };
   const fontsConfig = [
     {
-      name: "IBM Plex Mono",
-      font: "IBM+Plex+Mono",
+      name: fontFamily.name,
+      font: fontFamily.font,
       weight: 400,
       style: "normal",
     },
     {
-      name: "IBM Plex Mono",
-      font: "IBM+Plex+Mono",
+      name: fontFamily.name,
+      font: fontFamily.font,
       weight: 700,
       style: "bold",
     },
