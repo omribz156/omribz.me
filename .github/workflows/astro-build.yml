@@ -16,7 +16,7 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
 
     steps:
@@ -45,7 +45,8 @@ jobs:
         run: pnpm run build
 
       - name: Install browser
-        run: pnpm exec playwright install --with-deps chromium
+        # The hosted runner includes browser libraries; avoid unrelated apt upgrades.
+        run: pnpm exec playwright install chromium
 
       - name: Browser and HTTP regression tests
         run: pnpm run test:browser
