@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { projects } from "../../src/data/portfolio";
+import { portfolio, projects } from "../../src/data/portfolio";
 
 for (const locale of ["en", "he"] as const) {
   const path = locale === "he" ? "/he/portfolio" : "/portfolio";
@@ -10,6 +10,20 @@ for (const locale of ["en", "he"] as const) {
     await expect(page.locator("html")).toHaveAttribute("lang", locale);
     await expect(page.locator("html")).toHaveAttribute("dir", locale === "he" ? "rtl" : "ltr");
     await expect(page.locator("h1")).toHaveCount(1);
+    const copy = portfolio[locale];
+    await expect(page.locator(".introduction .lead")).toHaveText(copy.intro);
+    await expect(page.locator(".introduction .background")).toHaveText(copy.background);
+    await expect(page.locator('meta[name="description"]')).toHaveAttribute(
+      "content",
+      copy.description,
+    );
+    await expect(page.locator(".method > p")).toHaveText([
+      copy.methodText,
+      copy.methodAgents,
+      copy.methodLearning,
+      copy.compatibility,
+    ]);
+    await expect(page.locator(".contact > p")).toHaveText(copy.contactText);
     await expect(page.locator(".project")).toHaveCount(6);
     await expect(page.locator(".project-index a")).toHaveCount(6);
     await expect(page.locator("#more-work, .small-project")).toHaveCount(0);
@@ -69,6 +83,8 @@ for (const locale of ["en", "he"] as const) {
     for (const id of projects.map((project) => project.id)) {
       await page.locator(`#${id}`).screenshot({ path: info.outputPath(`${id}.png`) });
     }
+    await page.locator(".introduction").screenshot({ path: info.outputPath("introduction.png") });
+    await page.locator(".method").screenshot({ path: info.outputPath("method.png") });
     await page.screenshot({ path: info.outputPath("portfolio-loaded.png"), fullPage: true });
   });
 
@@ -146,6 +162,10 @@ for (const locale of ["en", "he"] as const) {
           expect(style.opacity).toBe("1");
         }
         if (width <= 600) {
+          await expect(page.locator(".summary").first()).toHaveCSS("font-size", "18px");
+          await expect(page.locator(".summary").first()).toHaveCSS("line-height", "28.8px");
+          await expect(page.locator(".summary").first()).toHaveCSS("text-wrap", "wrap");
+          await expect(page.locator(".project-story").first()).toHaveCSS("margin-top", "20px");
           for (const row of await page.locator(".system-map > div").all()) {
             const title = await row.locator("strong").boundingBox();
             const description = await row.locator("span").boundingBox();

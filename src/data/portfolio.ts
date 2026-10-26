@@ -18,11 +18,11 @@ export const portfolio = {
   en: {
     title: "Portfolio",
     eyebrow: "Selected work / 2026",
-    intro: "Security experience. Agentic engineering. Selected work.",
+    intro: "From understanding a need to building and running the solution.",
     description:
-      "Selected projects by Omri Ben Zvi: a deployed product, open-source contributions, security research infrastructure, and practical tools built with coding agents.",
+      "Selected projects by Omri Ben Zvi, bringing security and infrastructure experience to applications, automation, agent workflows and client delivery.",
     background:
-      "Information security analyst with a background in communications infrastructure and military leadership. Responsible for the architecture and technical decisions behind these projects, with coding agents supporting implementation.",
+      "A background in information security, production infrastructure and leading technical teams. These independent projects put that experience into practice: understanding requirements, choosing the architecture, and taking responsibility for delivery and ongoing improvements, with coding agents supporting development.",
     pdf: "Download portfolio",
     pdfNote: "PDF · English · September 2026",
     email: "Get in touch",
@@ -33,7 +33,7 @@ export const portfolio = {
     more: "More work",
     method: "How I work",
     methodText:
-      "Start with the need, then choose the technology. Research the options, consult people, and weigh the trade-offs before committing to an architecture. In Hachozeh, that meant choosing a multi-page foundation for loading speed, then adapting navigation as the product grew. For a client site, it meant turning the practice's needs into structure, content flow, and design.",
+      "Start by understanding who needs the solution, what is getting in their way, and how it will be used. Research the options, consult people, and weigh security, performance and maintenance before choosing the technology. Take responsibility beyond the first working version: deployment, troubleshooting and improvements are part of delivery. Hachozeh and the client website both grew from that approach, with different needs shaping different decisions.",
     methodAgents:
       "Codex and Claude Code are part of the development process, contributing ideas and substantial implementation work. Setting direction, choosing between approaches, and checking the result remain my responsibility. Decisions, instructions, and context stay in the repository so a fresh agent or another workstation can pick up the work without depending on one chat.",
     methodLearning:
@@ -43,7 +43,7 @@ export const portfolio = {
     vault: "My reusable agent workflows",
     contactTitle: "Let's talk.",
     contactText:
-      "Always interested in thoughtful work at the intersection of security and agentic engineering. Let's compare notes.",
+      "Always open to interesting problems and good people to work with, whether improving infrastructure, making systems more secure, or building useful applications and automation. Let's compare notes.",
     impact: "Merged pull requests",
     repos: "External repositories",
     verified: "Verified October 20, 2026. Public, merged PRs; personal repositories excluded.",
@@ -67,11 +67,11 @@ export const portfolio = {
   he: {
     title: "תיק עבודות",
     eyebrow: "פרויקטים נבחרים / 2026",
-    intro: "ניסיון באבטחת מידע. הנדסת סוכנים. פרויקטים נבחרים.",
+    intro: "מהבנת הצורך ועד לפתרון שעובד בשטח.",
     description:
-      "פרויקטים נבחרים של עומרי בן צבי: מוצר פעיל, תרומות לקוד פתוח, תשתית למחקר אבטחה וכלים מעשיים שנבנו עם סוכני קוד.",
+      "פרויקטים נבחרים של עומרי בן צבי, המשלבים ניסיון באבטחת מידע ובתשתיות עם בניית יישומים, אוטומציות, תהליכי עבודה עם סוכנים ופתרונות ללקוחות.",
     background:
-      "אנליסט אבטחת מידע עם רקע בתשתיות תקשוב ובפיקוד בצה״ל. אחראי לתכנון הארכיטקטורה ולהחלטות הטכנולוגיות בפרויקטים האלה, בשיתוף סוכני קוד בתהליך הפיתוח.",
+      "הרקע שלי באבטחת מידע, בתשתיות ובהובלת צוותים טכניים מלווה גם את הפרויקטים העצמאיים שכאן. העבודה משלבת הבנת צרכים, בחירת ארכיטקטורה ופיתוח עם סוכני קוד, לצד אחריות לתחזוקה ולשיפור של המוצרים הפעילים.",
     pdf: "הורדת תיק העבודות",
     pdfNote: "PDF · באנגלית · ספטמבר 2026",
     email: "יצירת קשר",
@@ -82,7 +82,7 @@ export const portfolio = {
     more: "פרויקטים נוספים",
     method: "איך אני עובד",
     methodText:
-      "מתחיל מהצורך, ורק אחר כך בוחר את הטכנולוגיה. בודק חלופות, קורא ומתייעץ כדי להבין את היתרונות והפשרות של כל גישה. בחוזה, למשל, בחרתי במבנה מרובה עמודים לטובת מהירות הטעינה, והתאמתי את הניווט ככל שהמוצר התפתח. באתר ללקוח, נקודת המוצא הייתה צורכי המשרד, ומהם גזרתי את מבנה האתר, סדר התכנים והעיצוב.",
+      "מתחיל מלהבין למי הפתרון מיועד, מה מקשה עליו ואיך ישתמש בו בפועל. בודק חלופות, קורא ומתייעץ, ושוקל אבטחה, ביצועים ותחזוקה לפני הבחירה בטכנולוגיה. האחריות לא נגמרת בגרסה הראשונה שעובדת: גם ההעלאה לאוויר, פתרון תקלות והשיפורים בהמשך הם חלק מהעבודה. כך ניגשתי גם לחוזה וגם לאתר ללקוח, כשהצרכים השונים הובילו לבחירות שונות.",
     methodAgents:
       "סוכני קוד הם חלק מתהליך הפיתוח שלי. Codex ו-Claude Code מציעים רעיונות ומבצעים חלק ניכר מהפיתוח, אבל קביעת הכיוון, הבחירה בין הפתרונות ובדיקת התוצאה נשארות באחריותי. ההחלטות, ההנחיות והרקע לעבודה מתועדים במאגר הקוד, כך שאפשר להמשיך עם סוכן חדש או ממחשב אחר בלי להיות תלויים בשיחה אחת.",
     methodLearning:
@@ -92,7 +92,7 @@ export const portfolio = {
     vault: "תהליכי העבודה שלי עם סוכנים",
     contactTitle: "בואו נדבר.",
     contactText:
-      "תמיד פתוח לעשייה מעניינת בחיבור שבין אבטחת מידע להנדסת סוכנים. אשמח להכיר ולשמוע.",
+      "תמיד פתוח לאתגרים מעניינים ולאנשים טובים לעבוד איתם, בין אם בשיפור תשתיות, באבטחת מערכות או בבניית יישומים ואוטומציות שימושיים. אשמח להכיר ולשמוע.",
     impact: "בקשות מיזוג שהתקבלו",
     repos: "מאגרי קוד חיצוניים",
     verified:

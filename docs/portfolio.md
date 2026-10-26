@@ -443,3 +443,33 @@ Built preview (including search): `http://127.0.0.1:4348/he/portfolio`, tmux
 Release CI exposed a newer-Chromium Escape focus-restoration edge case in the
 image viewer. Explicit cancellation handling and next-frame focus restoration
 keep the opening thumbnail focused after native dialog dismissal.
+
+## Next release: English mobile spacing
+
+Owner requested the same compact mobile typography for English: natural wrapping,
+1.6 line height, 18px summaries and 20px role spacing. Shared across both locales
+at widths up to 600px; desktop styling and content unchanged. Keep local until
+the forthcoming CV/About revisions are ready; no deployment authorized for this
+follow-up yet.
+
+## Next release: broader positioning
+
+Aligned the EN/HE portfolio introduction, metadata, working approach and contact
+copy with the approved About direction and six private CV baselines. Security,
+production infrastructure and technical leadership underpin independent building;
+the page is not limited to security/agentic roles. Emphasize understanding needs,
+technical choices, delivery and continued operation without adding job titles,
+credentials or outcomes. Keep coding-agent involvement explicit and preserve
+the project evidence, limitations, visuals, layout and downloadable portfolio.
+CV variants remain private. Local draft only, alongside the About and mobile
+spacing changes; no deployment.
+
+Verification: build and formatting/lint pass. Twelve focused desktop/mobile
+tests pass for About, portfolio copy/metadata/downloads and responsive layout
+(320/390/768/1280px, both themes). Reviewed localized introduction and working
+approach captures; project stories and PDF unchanged.
+
+Release authorization: owner requested deployment on 2026-10-26 for the combined
+About, broader portfolio positioning and English mobile-spacing updates. This
+supersedes the local-only holds above. Preserve the existing security controls;
+require CI and post-deployment checks of both locales and public origins.
