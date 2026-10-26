@@ -37,7 +37,19 @@ const closeLabel = locale === "he" ? "סגירת התמונה" : "Close image";
     image.src = link.href;
     image.alt = thumbnail.alt;
     dialog.showModal();
-    dialog.addEventListener("close", () => link.isConnected && link.focus({ preventScroll: true }), { once: true });
+    dialog.addEventListener("close", () => {
+      // Restore after the browser's native dismissal/focus steps have completed.
+      requestAnimationFrame(() => {
+        if (link.isConnected && !dialog.open) link.focus({ preventScroll: true });
+      });
+    }, { once: true });
+  }, { capture: true });
+
+  document.addEventListener("cancel", (event) => {
+    if (event.target instanceof HTMLDialogElement && event.target.id === "portfolio-image-viewer") {
+      event.preventDefault();
+      event.target.close();
+    }
   }, { capture: true });
 
   document.addEventListener("astro:before-swap", () => {

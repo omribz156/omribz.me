@@ -1,0 +1,42 @@
+<div class="reading-progress" aria-hidden="true"><div data-reading-progress></div></div>
+
+<style>
+  .reading-progress { position: fixed; inset: 0 0 auto; height: 4px; z-index: 40; pointer-events: none; }
+  [data-reading-progress] { width: 0; height: 100%; background: var(--accent); }
+</style>
+
+<script>
+  let cleanup: (() => void) | undefined;
+
+  function initReadingProgress() {
+    cleanup?.();
+    const bar = document.querySelector<HTMLElement>("[data-reading-progress]");
+    if (!bar) return;
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const height = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = height > 0 ? Math.min(1, Math.max(0, window.scrollY / height)) : 0;
+      bar.style.width = `${progress * 100}%`;
+    };
+    const schedule = () => { if (!frame) frame = requestAnimationFrame(update); };
+    const observer = new ResizeObserver(schedule);
+    observer.observe(document.body);
+    // The layout fixes body height to the viewport; content can grow beyond it.
+    const content = document.querySelector("main");
+    if (content) observer.observe(content);
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
+    schedule();
+    cleanup = () => {
+      observer.disconnect();
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+      cancelAnimationFrame(frame);
+    };
+  }
+
+  document.addEventListener("astro:before-swap", () => cleanup?.());
+  document.addEventListener("astro:page-load", initReadingProgress);
+  initReadingProgress();
+</script>

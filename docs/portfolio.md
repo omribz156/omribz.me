@@ -415,3 +415,31 @@ and overflow checks at 320/390/768/1280px in both themes. The portfolio is inclu
 in Pagefind. Sharing uses the existing site image with localized page metadata.
 
 Content: `src/data/portfolio.ts`. Layout: `src/components/Portfolio.astro`.
+
+## Mobile follow-up: 2026-10-26
+
+- Search UI recreated on locale changes, including Hebrew clear/results text;
+  mirrored input, icon and clear button with reserved text space.
+- Mobile menu utilities share one three-column row.
+- Hachozeh system labels sit above their descriptions on narrow screens.
+- Shared reading-progress component used by posts and portfolio; cleans up on
+  Astro navigation and recalculates when expanded details change page height.
+- Hebrew mobile prose uses natural wrapping and tighter line height; summary
+  18px, role spacing 20px. Project structure, images and copy unchanged.
+- Owner authorized deployment of these mobile fixes on 2026-10-26. Release through
+  PR checks and deploy the merged revision, then verify both live locales.
+
+Verification: Astro build passed (0 errors/warnings, 3 existing hints), formatting
+and lint passed, 3 unit tests and 48 Chromium desktop/mobile browser tests passed.
+Coverage includes RTL search and EN/HE/EN transitions, one-row menu controls,
+progress after expansion/navigation, and layouts at 320/390/768/1280px. Related
+layout boxes are measured in one frame to avoid scroll-anchoring test races.
+Manually browsed search, portfolio and post progress; inspected mobile captures.
+Real-device iOS Safari remains an owner check. Screenshot:
+`/tmp/omribz-he-mobile-polish.png`.
+Built preview (including search): `http://127.0.0.1:4348/he/portfolio`, tmux
+`omribz-mobile-review`, loopback only. Dev preview remains on 4347.
+
+Release CI exposed a newer-Chromium Escape focus-restoration edge case in the
+image viewer. Explicit cancellation handling and next-frame focus restoration
+keep the opening thumbnail focused after native dialog dismissal.
