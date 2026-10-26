@@ -78,6 +78,9 @@ for (const locale of ["en", "he"] as const) {
     for (const width of [320, 390, 768, 1280]) {
       await page.setViewportSize({ width, height: 900 });
       await page.goto(path);
+      await page.evaluate(() => {
+        document.documentElement.style.scrollBehavior = "auto";
+      });
       for (const theme of ["light", "dark"]) {
         await page.evaluate((value) => {
           document.documentElement.dataset.theme = value;
@@ -97,28 +100,39 @@ for (const locale of ["en", "he"] as const) {
         expect(overflow).toEqual([]);
         for (const project of projects) {
           const article = page.locator(`article#${project.id}`);
-          const heading = await article.locator(":scope > .project-heading").boundingBox();
-          const description = await article.locator(":scope > .summary").boundingBox();
-          expect(description!.y - (heading!.y + heading!.height)).toBeCloseTo(16, 0);
+          // Read related boxes in one frame; lazy media and scroll anchoring can move the page.
+          const boxes = await article.evaluate((element) => {
+            const rect = (selector: string) => {
+              const box = element.querySelector(selector)?.getBoundingClientRect();
+              return box
+                ? { top: box.top, bottom: box.bottom, width: box.width, height: box.height }
+                : null;
+            };
+            return {
+              heading: rect(":scope > .project-heading")!,
+              description: rect(":scope > .summary")!,
+              media: rect(":scope > figure"),
+              role: rect(":scope > .project-story")!,
+              symbol: rect(".project-symbol"),
+              status: rect(":scope > .project-meta .status")!,
+              contentTops: [...element.querySelectorAll(".project-heading, img")].map(
+                (node) => node.getBoundingClientRect().top,
+              ),
+            };
+          });
+          expect(boxes.description.top - boxes.heading.bottom).toBeCloseTo(16, 0);
           await expect(article.locator(".project-heading h2")).toHaveCount(1);
-          const figure = article.locator(":scope > figure");
-          if (await figure.count()) {
-            const media = await figure.boundingBox();
-            const role = await article.locator(":scope > .project-story").boundingBox();
-            expect(media!.y).toBeGreaterThanOrEqual(description!.y + description!.height);
-            expect(role!.y).toBeGreaterThanOrEqual(media!.y + media!.height);
+          if (boxes.media) {
+            expect(boxes.media.top).toBeGreaterThanOrEqual(boxes.description.bottom);
+            expect(boxes.role.top).toBeGreaterThanOrEqual(boxes.media.bottom);
           }
           if (project.symbol) {
-            const symbol = await article.locator(".project-symbol").boundingBox();
-            expect(symbol!.width).toBe(width <= 600 ? 64 : 72);
-            expect(symbol!.height).toBe(symbol!.width);
+            expect(boxes.symbol!.width).toBe(width <= 600 ? 64 : 72);
+            expect(boxes.symbol!.height).toBe(boxes.symbol!.width);
           }
-          const status = await article.locator(":scope > .project-meta .status").boundingBox();
-          expect(status).not.toBeNull();
-          for (const content of await article.locator(".project-heading, img").all()) {
-            const bounds = await content.boundingBox();
-            expect(bounds).not.toBeNull();
-            expect(status!.y + status!.height).toBeLessThanOrEqual(bounds!.y + 1);
+          expect(boxes.status).not.toBeNull();
+          for (const top of boxes.contentTops) {
+            expect(boxes.status.bottom).toBeLessThanOrEqual(top + 1);
           }
         }
         for (const label of await page
@@ -130,6 +144,18 @@ for (const locale of ["en", "he"] as const) {
           });
           expect(style.size).toBeGreaterThanOrEqual(14);
           expect(style.opacity).toBe("1");
+        }
+        if (width <= 600) {
+          for (const row of await page.locator(".system-map > div").all()) {
+            const title = await row.locator("strong").boundingBox();
+            const description = await row.locator("span").boundingBox();
+            expect(description!.y).toBeGreaterThanOrEqual(title!.y + title!.height);
+          }
+        }
+        if (width === 390 && theme === "dark") {
+          await page
+            .locator(locale === "he" ? "#security-research-harness" : "#hachozeh")
+            .screenshot({ path: info.outputPath(`${locale}-mobile-project.png`) });
         }
         await page.screenshot({
           path: info.outputPath(`${locale}-${width}-${theme}.png`),
@@ -150,6 +176,34 @@ for (const locale of ["en", "he"] as const) {
         `.pagefind-ui__result-link[href$="${path}/"], .pagefind-ui__result-link[href$="${path}"]`,
       ),
     ).toBeVisible();
+  });
+
+  test(`reading progress follows scroll and expanded content: ${locale}`, async ({ page }) => {
+    await page.goto(path);
+    const bar = page.locator("[data-reading-progress]");
+    await expect(bar).toHaveCount(1);
+    await expect(bar).toHaveCSS("width", "0px");
+    await page.evaluate(() => {
+      document.documentElement.style.scrollBehavior = "auto";
+      window.scrollTo(0, (document.documentElement.scrollHeight - innerHeight) / 2);
+    });
+    await expect.poll(() => bar.evaluate((el) => parseFloat(el.style.width))).toBeGreaterThan(0);
+    await page.locator("#security-research-harness summary").click();
+    await expect
+      .poll(async () => {
+        return bar.evaluate((el) => {
+          const expected = (scrollY / (document.documentElement.scrollHeight - innerHeight)) * 100;
+          return Math.abs(parseFloat(el.style.width) - expected);
+        });
+      })
+      .toBeLessThan(1);
+    await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+    await expect.poll(() => bar.evaluate((el) => parseFloat(el.style.width))).toBeCloseTo(100, 0);
+    await page.locator("footer a[href$='/privacy']").click();
+    await expect(page).toHaveURL(/\/privacy$/);
+    await expect(bar).toHaveCount(0);
+    await page.goBack();
+    await expect(bar).toHaveCount(1);
   });
 
   test(`portfolio image viewer can always be dismissed: ${locale}`, async ({ page }) => {
@@ -208,6 +262,7 @@ test("portfolio language navigation preserves route, menu and theme", async ({
   const theme = await page.locator("html").getAttribute("data-theme");
   await page.getByRole("link", { name: "Switch to Hebrew" }).click();
   await expect(page).toHaveURL(/\/he\/portfolio$/);
+  await expect(page.locator("[data-reading-progress]")).toHaveCount(1);
   await expect(page.locator("html")).toHaveAttribute("data-theme", theme!);
   await page.locator("a[data-portfolio-image]").first().click();
   await expect(page.locator("#portfolio-image-viewer")).toBeVisible();
@@ -216,8 +271,58 @@ test("portfolio language navigation preserves route, menu and theme", async ({
   if (isMobile) await page.locator("#menu-btn").click();
   await page.getByRole("link", { name: "Switch to English" }).click();
   await expect(page).toHaveURL(/\/portfolio$/);
+  await expect(page.locator("[data-reading-progress]")).toHaveCount(1);
   if (isMobile) {
     await page.locator("#menu-btn").click();
     await expect(page.locator("#menu-btn")).toHaveAttribute("aria-expanded", "true");
+    const tools = page.locator("#menu-items > li:nth-last-child(-n+3)");
+    const positions = await tools.evaluateAll((items) =>
+      items.map((item) => item.getBoundingClientRect().top),
+    );
+    expect(Math.max(...positions) - Math.min(...positions)).toBeLessThan(1);
   }
+});
+
+test("search localizes and mirrors controls across language navigation", async ({
+  page,
+  isMobile,
+}, info) => {
+  const errors: string[] = [];
+  page.on("pageerror", (error) => errors.push(error.message));
+  await page.goto("/search");
+  for (const locale of ["en", "he", "en"]) {
+    const input = page.locator(".pagefind-ui__search-input");
+    await expect(page.locator("html")).toHaveAttribute("lang", locale);
+    await expect(input).toHaveAttribute("placeholder", locale === "he" ? /חיפוש/ : /Search posts/);
+    await input.fill(locale === "he" ? "החוזה" : "Hachozeh");
+    const clear = page.getByRole("button", {
+      name: locale === "he" ? "נקה" : "Clear",
+      exact: true,
+    });
+    await expect(clear).toBeVisible();
+    await expect(page.locator(".pagefind-ui__message")).toContainText(
+      locale === "he" ? /תוצא/ : /result/,
+    );
+    if (locale === "he") {
+      await expect(input).toHaveCSS("direction", "rtl");
+      await expect(input).toHaveCSS("text-align", "start");
+      const clearBox = await clear.boundingBox();
+      const inputBox = await input.boundingBox();
+      expect(clearBox!.x + clearBox!.width).toBeLessThan(inputBox!.x + inputBox!.width / 2);
+      await page.screenshot({ path: info.outputPath("he-search.png") });
+    }
+    await clear.click();
+    await expect(input).toHaveValue("");
+    await expect(page).not.toHaveURL(/\?q=/);
+    await input.fill("zxqvzzxqv");
+    await expect(page.locator(".pagefind-ui__message")).toContainText(
+      locale === "he" ? "לא נמצאו" : "No results",
+    );
+    if (isMobile) await page.locator("#menu-btn").click();
+    await page.screenshot({ path: info.outputPath(`${locale}-menu.png`) });
+    await page
+      .getByRole("link", { name: locale === "he" ? "Switch to English" : "Switch to Hebrew" })
+      .click();
+  }
+  expect(errors).toEqual([]);
 });

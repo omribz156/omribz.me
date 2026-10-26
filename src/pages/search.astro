@@ -28,7 +28,7 @@ const labels = {
 <Layout title={`${labels.title} | ${SITE.title}`} description={labels.description}>
   <Header />
   <Main pageTitle={labels.title} pageDesc={labels.pageDesc}>
-    <div id="pagefind-search" transition:persist data-backurl={backUrl} data-placeholder={labels.placeholder}></div>
+    <div id="pagefind-search" data-backurl={backUrl} data-placeholder={labels.placeholder}></div>
   </Main>
   <Footer />
 </Layout>
@@ -37,6 +37,17 @@ const labels = {
   const searchPlaceholders = {
     en: "Search posts, e.g. 'the 3 waves of AI'",
     he: "חיפוש פוסטים, למשל ״שלושת גלי ה-AI״",
+  };
+  let activeSearch: { destroy: () => void } | undefined;
+  const hebrewTranslations = {
+    language: "he",
+    search_label: "חיפוש באתר",
+    clear_search: "נקה",
+    load_more: "תוצאות נוספות",
+    searching: "מחפש את ״[SEARCH_TERM]״...",
+    zero_results: "לא נמצאו תוצאות עבור ״[SEARCH_TERM]״",
+    one_result: "תוצאה אחת עבור ״[SEARCH_TERM]״",
+    many_results: "[COUNT] תוצאות עבור ״[SEARCH_TERM]״",
   };
 
   function getSearchLocale() {
@@ -57,7 +68,8 @@ const labels = {
     const pageFindSearch: HTMLElement | null =
       document.querySelector("#pagefind-search");
 
-    if (!pageFindSearch) return;
+    if (!pageFindSearch || pageFindSearch.dataset.initialized) return;
+    pageFindSearch.dataset.initialized = "true";
 
     const params = new URLSearchParams(window.location.search);
 
@@ -66,6 +78,7 @@ const labels = {
     onIdle(async () => {
       // @ts-expect-error — Missing types for @pagefind/default-ui package.
       const { PagefindUI } = await import("@pagefind/default-ui");
+      if (!pageFindSearch.isConnected) return;
 
       // Display warning inn dev mode
       if (import.meta.env.DEV) {
@@ -82,9 +95,15 @@ const labels = {
         element: "#pagefind-search",
         showSubResults: true,
         showImages: false,
+        translations: {
+          ...(getSearchLocale() === "he" ? hebrewTranslations : {}),
+          placeholder: searchPlaceholders[getSearchLocale()],
+        },
         processTerm: function (term: string) {
-          params.set("q", term); // Update the `q` parameter in the URL
-          history.replaceState(history.state, "", "?" + params.toString()); // Push the new URL without reloading
+          if (term.trim()) params.set("q", term);
+          else params.delete("q");
+          const queryString = params.toString();
+          history.replaceState(history.state, "", window.location.pathname + (queryString ? "?" + queryString : ""));
 
           const backUrl = pageFindSearch?.dataset?.backurl;
           sessionStorage.setItem("backUrl", backUrl + "?" + params.toString());
@@ -92,6 +111,7 @@ const labels = {
           return term;
         },
       });
+      activeSearch = search;
 
       // If search param exists (eg: search?q=astro), trigger search
       const query = params.get("q");
@@ -108,28 +128,23 @@ const labels = {
         searchInput.focus();
         updateSearchPlaceholder();
       }
-      searchInput?.addEventListener("input", resetSearchParam);
+      searchInput?.addEventListener("input", () => {
+        if (!searchInput.value.trim()) resetSearchParam();
+      });
       clearButton?.addEventListener("click", resetSearchParam);
 
-      function resetSearchParam(e: Event) {
-        if ((e.target as HTMLInputElement)?.value.trim() === "") {
-          history.replaceState(history.state, "", window.location.pathname);
-        }
+      function resetSearchParam() {
+        params.delete("q");
+        history.replaceState(history.state, "", window.location.pathname);
       }
     });
   }
 
-  document.addEventListener("astro:after-swap", () => {
-    const pagefindSearch = document.querySelector("#pagefind-search");
-
-    // if pagefind search form already exists, don't initialize search component
-    if (pagefindSearch && pagefindSearch.querySelector("form")) {
-      updateSearchPlaceholder();
-      return;
-    }
-
-    initSearch();
+  document.addEventListener("astro:before-swap", () => {
+    activeSearch?.destroy();
+    activeSearch = undefined;
   });
+  document.addEventListener("astro:page-load", initSearch);
   initSearch();
 </script>
 
@@ -179,5 +194,24 @@ const labels = {
     .pagefind-ui__result-nested .pagefind-ui__result-link:before {
       font-family: system-ui;
     }
+  }
+
+  #pagefind-search:lang(he) {
+    .pagefind-ui__form::before { left: auto; right: calc(20px * var(--pagefind-ui-scale)); }
+    .pagefind-ui__search-input {
+      direction: rtl;
+      text-align: start;
+      /* Pagefind writes physical padding-right inline for its clear button. */
+      padding-right: calc(54px * var(--pagefind-ui-scale)) !important;
+      padding-left: calc(80px * var(--pagefind-ui-scale));
+    }
+    .pagefind-ui__search-clear {
+      right: auto;
+      left: calc(3px * var(--pagefind-ui-scale));
+      padding-inline: calc(15px * var(--pagefind-ui-scale));
+    }
+    .pagefind-ui__message { text-align: start; }
+    .pagefind-ui__result-nested { padding-left: 0; padding-right: calc(20px * var(--pagefind-ui-scale)); }
+    .pagefind-ui__result-nested .pagefind-ui__result-link::before { right: auto; left: calc(100% + 0.1em); }
   }
 </style>

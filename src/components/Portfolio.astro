@@ -3,6 +3,7 @@ import Layout from "@/layouts/Layout.astro";
 import Header from "./Header.astro";
 import Footer from "./Footer.astro";
 import PortfolioImageViewer from "./PortfolioImageViewer.astro";
+import ReadingProgress from "./ReadingProgress.astro";
 import IconArrowRight from "@/assets/icons/IconArrowRight.svg";
 import IconGitHub from "@/assets/icons/IconGitHub.svg";
 import IconMail from "@/assets/icons/IconMail.svg";
@@ -24,6 +25,7 @@ const media: Record<string, { src: string; width: number; height: number; alt: s
 ---
 
 <Layout title={`${copy.title} | ${locale === "he" ? "עומרי בן צבי" : "Omri Ben Zvi"}`} description={copy.description}>
+  <ReadingProgress />
   <Header />
   <main id="main-content" class="portfolio" data-pagefind-body>
     <section class="introduction" aria-labelledby="portfolio-title">
@@ -183,9 +185,11 @@ const media: Record<string, { src: string; width: number; height: number; alt: s
     .project-symbol { width: 64px; height: 64px; }
     .project { padding-block: 32px; }
     .project-meta { align-items: start; flex-direction: column; gap: 4px; }
-    .system-map { grid-template-columns: 1fr; gap: 14px; }
-    .system-map div { display: flex; justify-content: space-between; gap: 16px; }
-    .system-map span { margin-top: 0; text-align: end; }
+    .system-map { grid-template-columns: 1fr; gap: 18px; }
+    .system-map span { margin-top: 4px; }
+    .portfolio:lang(he) p { text-wrap: wrap; line-height: 1.6; }
+    .portfolio:lang(he) .summary { font-size: 18px; }
+    .portfolio:lang(he) .project-story { margin-top: 20px; }
     .contributions ul { grid-template-columns: 1fr; gap: 14px; }
     .contributions p { margin-top: 4px; }
     .contact .project-links { flex-direction: column; align-items: start; }
