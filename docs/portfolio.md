@@ -439,3 +439,7 @@ Real-device iOS Safari remains an owner check. Screenshot:
 `/tmp/omribz-he-mobile-polish.png`.
 Built preview (including search): `http://127.0.0.1:4348/he/portfolio`, tmux
 `omribz-mobile-review`, loopback only. Dev preview remains on 4347.
+
+Release CI exposed a newer-Chromium Escape focus-restoration edge case in the
+image viewer. Explicit cancellation handling and next-frame focus restoration
+keep the opening thumbnail focused after native dialog dismissal.
