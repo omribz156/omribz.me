@@ -21,7 +21,13 @@ for (const prefix of ["", "/he"]) {
     );
     await expect(page.locator(".email-updates form, .email-updates input")).toHaveCount(0);
     expect(
-      requests.filter((url) => /\/api\/subscribe|challenges.cloudflare.com/.test(url)),
+      requests.filter((url) => {
+        const request = new URL(url);
+        return (
+          ["/api/subscribe", "/api/confirm-subscription"].includes(request.pathname) ||
+          request.hostname === "challenges.cloudflare.com"
+        );
+      }),
     ).toEqual([]);
     await page.locator(`.email-updates a[href="${prefix}/privacy"]`).click();
     await expect(page.locator("main")).toContainText("Gmail");
