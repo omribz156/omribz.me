@@ -1,10 +1,11 @@
 ---
+import { isPublished } from "@/utils/publication";
 import { type CollectionEntry, getCollection } from "astro:content";
 import PostDetails from "../../../layouts/PostDetails.astro";
 import { postMatchesLocale, postSlugForLocale } from "../../../utils/postLocale";
 
 export async function getStaticPaths() {
-  const posts = (await getCollection("blog", ({ data }) => import.meta.env.DEV || !data.draft)).filter((post) =>
+  const posts = (await getCollection("blog", isPublished)).filter((post) =>
     postMatchesLocale(post, "he"),
   );
 
@@ -19,7 +20,7 @@ type Props = {
 };
 
 const { post } = Astro.props;
-const posts = (await getCollection("blog")).filter((candidate) => postMatchesLocale(candidate, "he"));
+const posts = (await getCollection("blog", isPublished)).filter((candidate) => postMatchesLocale(candidate, "he"));
 ---
 
 <PostDetails post={post} posts={posts} />

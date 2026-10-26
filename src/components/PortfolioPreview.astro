@@ -1,0 +1,25 @@
+---
+import { portfolio, projects } from "@/data/portfolio";
+import { localizedPath, type Locale } from "@/utils/i18n";
+import IconArrowRight from "@/assets/icons/IconArrowRight.svg";
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const copy = portfolio[locale];
+const path = localizedPath("/portfolio", locale);
+---
+<section class="portfolio-preview" aria-labelledby="selected-work-title">
+  <h2 id="selected-work-title">{copy.homeTitle}</h2>
+  <p>{copy.homeDescription}</p>
+  <ul>{projects.slice(0, 3).map(project => <li><a href={`${path}#${project.id}`}><bdi>{project.name[locale]}</bdi></a></li>)}</ul>
+  <a class="explore" href={path}>{copy.homeLink}<IconArrowRight /></a>
+</section>
+<style>
+  .portfolio-preview { padding-block: 28px; }
+  h2 { font-size: 20px; font-weight: 600; }
+  p { font-size: 14px; line-height: 1.8; margin-top: 12px; opacity: .8; }
+  ul { display: flex; flex-wrap: wrap; gap: 10px 24px; list-style: none; margin-block: 16px; font-size: 13px; }
+  a:hover { text-decoration: underline; text-underline-offset: 5px; }
+  .explore { display: inline-flex; align-items: center; gap: 10px; color: var(--accent); font-size: 13px; }
+  svg { width: 18px; height: 18px; }
+  :global([dir="rtl"]) svg { transform: scaleX(-1); }
+</style>

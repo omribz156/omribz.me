@@ -22,7 +22,7 @@
 
 <!-- Lightweight custom events -->
 <script>
-  function trackOmribzEvent(name, properties = {}) {
+  function trackOmribzEvent(name: string, properties: Record<string, string | number | boolean | null> = {}) {
     if (!import.meta.env.PROD || !name) return;
 
     import("@vercel/analytics").then(({ track }) => {

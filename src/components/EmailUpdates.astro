@@ -1,0 +1,22 @@
+---
+import { getLocale } from "@/utils/i18n";
+
+export interface Props { variant?: "default" | "compact"; }
+const { variant = "default" } = Astro.props;
+const he = getLocale(Astro.url.pathname) === "he";
+const subject = he ? "בקשה לעדכונים מהאתר" : "Updates from omribz.me";
+const body = he
+  ? "היי עומרי, אשמח לקבל עדכונים מזדמנים על פוסטים ופרויקטים חדשים."
+  : "Hi Omri, I'd like occasional updates about new posts and projects.";
+const href = `mailto:omribz156@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+---
+<aside class:list={["email-updates", variant === "compact" ? "mt-6" : "my-8 border-t border-foreground/20 pt-6"]}>
+  <p>
+    <a class="underline underline-offset-4" href={href}>
+      {he ? "רוצים לקבל עדכונים? כתבו לי במייל" : "Email me for updates"}
+    </a>
+  </p>
+  <a class="mt-2 inline-block text-sm underline underline-offset-4" href={he ? "/he/privacy" : "/privacy"}>
+    {he ? "פרטיות והסרה" : "Privacy and removal"}
+  </a>
+</aside>

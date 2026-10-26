@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+
 env:
   NODE_VERSION: "24"
   ASTRO_TELEMETRY_DISABLED: "1"
@@ -17,10 +20,12 @@ jobs:
     timeout-minutes: 15
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: ${{ env.NODE_VERSION }}
 
@@ -30,8 +35,20 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build Astro site
+      - name: Unit and abuse regression tests
+        run: pnpm test
+
+      - name: Build and verify publication boundaries
+        run: pnpm run test:publication
+
+      - name: Build clean production site
         run: pnpm run build
+
+      - name: Install browser
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Browser and HTTP regression tests
+        run: pnpm run test:browser
 
       - name: Check build output
         run: ls -la dist/

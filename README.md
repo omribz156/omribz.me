@@ -62,6 +62,10 @@ Hebrew posts should use `lang: "he"` and can live under `src/content/blog/he/`.
 
 This site is set up for easy deployment on Vercel. Just connect your GitHub repository to Vercel, and it will automatically build and deploy the site when changes are pushed.
 
+Use a pull request into protected main. Run the checks in [the security and release runbook](docs/security.md) before release. The production build includes type checks and generated script CSP; do not deploy raw `astro build` output.
+
+Newsletter setup, consent, rate limits, publication rules, account prerequisites, monitoring, and rollback are documented in that runbook.
+
 ## License
 
 This repository uses dual licensing:

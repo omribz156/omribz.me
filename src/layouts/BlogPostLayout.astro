@@ -1,10 +1,11 @@
 ---
+import SafeEmbeds from "@/components/SafeEmbeds.astro";
 import type { CollectionEntry } from "astro:content";
 import { SITE } from "@/config";
 import Footer from "../components/Footer.astro";
 import FormattedDate from "../components/FormattedDate.astro";
 import Header from "../components/Header.astro";
-import NewsletterForm from "../components/NewsletterForm.astro";
+import EmailUpdates from "../components/EmailUpdates.astro";
 import Layout from "./Layout.astro";
 
 type Props = CollectionEntry<"blog">["data"] & {
@@ -160,192 +161,14 @@ const canonicalURL = new URL(canonicalPath, Astro.site).toString();
       <slot />
     </article>
 
-    <NewsletterForm />
+    <EmailUpdates />
   </main>
 
   <Footer />
 
-<script>
-  function initializeTwitterWidgets() {
-    // Check if Twitter widgets are already loaded
-    if (window.twttr && window.twttr.widgets) {
-      // Load all Twitter embeds on the page
-      window.twttr.widgets.load();
-    } else {
-      // If not loaded, wait for the script to load
-      window.addEventListener('load', () => {
-        if (window.twttr && window.twttr.widgets) {
-          window.twttr.widgets.load();
-        }
-      });
-    }
-  }
 
-	  function processEmbeds() {
-	    const article = document.querySelector("#article");
-	    if (!article) return;
 
-    // Look for Twitter embeds in the entire article content
-    const twitterEmbedRegex = /\{% twitter (https:\/\/[^\s]+) %\}/g;
-    // Look for YouTube embeds
-    const youtubeEmbedRegex =
-      /\{% youtube (https:\/\/[^\s]+|[a-zA-Z0-9_-]+) %\}/g;
-
-	    let foundTwitterEmbeds = false;
-	    let foundYoutubeEmbeds = false;
-
-	    // Helper to extract a YouTube video ID from various URL formats
-	    const extractYouTubeId = (input: string) => {
-	      let videoId = input;
-	      try {
-	        if (videoId.includes("youtube.com/watch")) {
-          const url = new URL(videoId);
-          videoId = url.searchParams.get("v") || "";
-        } else if (videoId.includes("youtu.be/")) {
-          videoId = videoId.split("youtu.be/")[1]?.split("?")[0] || "";
-        } else if (videoId.includes("youtube.com/embed/")) {
-          videoId = videoId.split("youtube.com/embed/")[1]?.split("?")[0] || "";
-        }
-      } catch (_) {
-        // If URL parsing fails, fall back to the raw input
-      }
-      return videoId;
-    };
-
-    // 1) Pre-pass: replace whole-paragraph shortcodes (most common case)
-    const pNodes = article.querySelectorAll("p");
-    pNodes.forEach((p) => {
-      const text = (p.textContent || "").trim();
-      const twMatch = text.match(/\{% twitter (https:\/\/[^\s]+) %\}/);
-      const ytMatch = text.match(/\{% youtube (https:\/\/[^\s]+|[a-zA-Z0-9_-]+) %\}/);
-
-      if (twMatch && twMatch[1]) {
-        foundTwitterEmbeds = true;
-        const url = twMatch[1];
-        const placeholder = document.createElement("div");
-        placeholder.className = "twitter-tweet-placeholder";
-        placeholder.dataset.tweetUrl = url;
-        placeholder.innerHTML = `
-          <blockquote class="twitter-tweet">
-            <a href="${url}">Loading tweet...</a>
-          </blockquote>
-        `;
-        p.replaceWith(placeholder);
-      } else if (ytMatch && ytMatch[1]) {
-        foundYoutubeEmbeds = true;
-        const videoId = extractYouTubeId(ytMatch[1]);
-        const container = document.createElement("div");
-        container.className = "youtube-embed-container";
-        container.innerHTML = `
-          <iframe
-            width="560"
-            height="315"
-            src="https://www.youtube.com/embed/${videoId}"
-            title="YouTube video player"
-            frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowfullscreen
-          ></iframe>
-        `;
-        p.replaceWith(container);
-      }
-    });
-    
-    // Check if there are any Twitter blockquotes already in the HTML
-    const twitterBlockquotes = article.querySelectorAll('blockquote.twitter-tweet');
-    if (twitterBlockquotes.length > 0) {
-      foundTwitterEmbeds = true;
-      // Initialize Twitter widgets for existing blockquotes
-      initializeTwitterWidgets();
-    }
-
-	    // 2) Fallback: process any remaining text nodes that still contain shortcodes
-	    const walker = document.createTreeWalker(article, NodeFilter.SHOW_TEXT);
-
-	    const textNodes: Node[] = [];
-	    let node;
-	    while ((node = walker.nextNode())) {
-	      textNodes.push(node);
-	    }
-
-	    textNodes.forEach((textNode) => {
-	      let content = textNode.textContent ?? "";
-	      let hasChanges = false;
-
-      // Process Twitter embeds
-      content = content.replace(twitterEmbedRegex, (match, url) => {
-        foundTwitterEmbeds = true;
-        hasChanges = true;
-        return `<div class="twitter-tweet-placeholder" data-tweet-url="${url}">
-            <blockquote class="twitter-tweet">
-              <a href="${url}">Loading tweet...</a>
-            </blockquote>
-          </div>`;
-      });
-
-      // Process YouTube embeds
-      content = content.replace(youtubeEmbedRegex, (match, videoId) => {
-        foundYoutubeEmbeds = true;
-        hasChanges = true;
-        videoId = extractYouTubeId(videoId);
-
-        return `<div class="youtube-embed-container">
-            <iframe
-              width="560"
-              height="315"
-              src="https://www.youtube.com/embed/${videoId}"
-              title="YouTube video player"
-              frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen
-            ></iframe>
-          </div>`;
-      });
-
-	      if (hasChanges) {
-	        // Replace the text node with HTML content
-	        const tempDiv = document.createElement("div");
-	        tempDiv.innerHTML = content;
-
-	        // Replace the text node with the new HTML elements
-	        const parent = textNode.parentNode;
-	        if (!parent) return;
-	        while (tempDiv.firstChild) {
-	          parent.insertBefore(tempDiv.firstChild, textNode);
-	        }
-	        parent.removeChild(textNode);
-	      }
-	    });
-
-    // Initialize Twitter widgets if we found Twitter embeds
-    if (foundTwitterEmbeds) {
-      initializeTwitterWidgets();
-    }
-  }
-
-  // Run the embed processing
-  document.addEventListener("DOMContentLoaded", processEmbeds);
-  document.addEventListener("astro:page-load", processEmbeds);
-  
-  // Ensure Twitter widgets are initialized on mobile
-  // Mobile browsers may need extra time for the external script to load
-  if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
-    // On mobile devices, check periodically if Twitter widgets are ready
-    let retryCount = 0;
-    const maxRetries = 10;
-    
-    const checkTwitterWidgets = setInterval(() => {
-      retryCount++;
-      
-      if (window.twttr && window.twttr.widgets) {
-        window.twttr.widgets.load();
-        clearInterval(checkTwitterWidgets);
-      } else if (retryCount >= maxRetries) {
-        clearInterval(checkTwitterWidgets);
-      }
-    }, 500);
-  }
-</script>
+<SafeEmbeds />
 
 <style>
   .twitter-tweet-placeholder {
@@ -372,20 +195,4 @@ const canonicalURL = new URL(canonicalPath, Astro.site).toString();
     border: 0;
   }
 </style>
-  
-  <!-- Twitter Widget Script - Load as external script -->
-  <script async src="https://platform.twitter.com/widgets.js" charset="utf-8" is:inline={false}></script>
-  
-  <!-- Fallback script for mobile initialization -->
-  <script is:inline>
-    // Ensure Twitter widgets are initialized after the external script loads
-    window.addEventListener('load', function() {
-      // Give the Twitter script time to initialize
-      setTimeout(function() {
-        if (window.twttr && window.twttr.widgets) {
-          window.twttr.widgets.load();
-        }
-      }, 100);
-    });
-  </script>
 </Layout>
