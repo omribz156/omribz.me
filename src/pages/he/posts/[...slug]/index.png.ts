@@ -1,3 +1,4 @@
+import { isPublished } from "@/utils/publication";
 import { type CollectionEntry, getCollection } from "astro:content";
 import type { APIRoute } from "astro";
 import { SITE } from "@/config";
@@ -10,7 +11,7 @@ export async function getStaticPaths() {
   }
 
   const posts = await getCollection("blog").then((p) =>
-    p.filter((post) => postMatchesLocale(post, "he") && !post.data.draft && !post.data.ogImage),
+    p.filter((post) => postMatchesLocale(post, "he") && isPublished(post) && !post.data.ogImage),
   );
 
   return posts.map((post) => ({

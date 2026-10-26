@@ -1,12 +1,13 @@
+import { isPublished } from "@/utils/publication";
 import type { CollectionEntry } from "astro:content";
 import { getCollection } from "astro:content";
 import type { APIRoute } from "astro";
 import { postMatchesLocale, postSlugForLocale } from "@/utils/postLocale";
 
 export async function getStaticPaths() {
-  const posts = (
-    await getCollection("blog", ({ data }) => import.meta.env.DEV || !data.draft)
-  ).filter((post) => postMatchesLocale(post, "en"));
+  const posts = (await getCollection("blog", isPublished)).filter((post) =>
+    postMatchesLocale(post, "en"),
+  );
 
   return posts.map((post) => ({
     params: { slug: postSlugForLocale(post) },

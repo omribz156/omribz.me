@@ -1,0 +1,43 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">OSS Supporter</title>
+  <desc id="desc">Use spare tokens for good. Turn unused agent capacity into careful open source maintenance.</desc>
+  <rect width="1200" height="630" fill="#0B1020"/>
+  <path d="M0 484C140 420 256 445 374 482C501 522 625 568 773 520C924 472 1046 340 1200 384V630H0V484Z" fill="#0E7490" opacity="0.22"/>
+  <path d="M0 402C141 346 278 366 416 421C565 480 728 530 900 457C1036 399 1118 300 1200 315V630H0V402Z" fill="#22C55E" opacity="0.16"/>
+  <g opacity="0.18">
+    <path d="M80 84H1120" stroke="#94A3B8"/>
+    <path d="M80 164H1120" stroke="#94A3B8"/>
+    <path d="M80 244H1120" stroke="#94A3B8"/>
+    <path d="M80 324H1120" stroke="#94A3B8"/>
+    <path d="M80 404H1120" stroke="#94A3B8"/>
+    <path d="M80 484H1120" stroke="#94A3B8"/>
+    <path d="M160 48V560" stroke="#94A3B8"/>
+    <path d="M320 48V560" stroke="#94A3B8"/>
+    <path d="M480 48V560" stroke="#94A3B8"/>
+    <path d="M640 48V560" stroke="#94A3B8"/>
+    <path d="M800 48V560" stroke="#94A3B8"/>
+    <path d="M960 48V560" stroke="#94A3B8"/>
+  </g>
+  <rect x="72" y="72" width="1056" height="486" rx="24" fill="#111827" fill-opacity="0.82" stroke="#334155"/>
+  <rect x="96" y="96" width="178" height="36" rx="18" fill="#052E2B" stroke="#14B8A6"/>
+  <text x="119" y="120" fill="#99F6E4" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">PUBLIC PLAYBOOK</text>
+  <text x="96" y="238" fill="#F8FAFC" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="86" font-weight="800">OSS Supporter</text>
+  <text x="100" y="306" fill="#5EEAD4" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="40" font-weight="700">Use spare tokens for good.</text>
+  <text x="102" y="362" fill="#CBD5E1" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="24">Turn unused agent capacity into careful open source maintenance.</text>
+  <g font-family="Inter, Segoe UI, Arial, sans-serif" font-size="20" font-weight="700">
+    <rect x="100" y="424" width="126" height="48" rx="12" fill="#1E293B" stroke="#38BDF8"/>
+    <text x="132" y="455" fill="#BAE6FD">Scout</text>
+    <text x="246" y="455" fill="#64748B">-></text>
+    <rect x="282" y="424" width="148" height="48" rx="12" fill="#1E293B" stroke="#A3E635"/>
+    <text x="315" y="455" fill="#D9F99D">Validate</text>
+    <text x="450" y="455" fill="#64748B">-></text>
+    <rect x="486" y="424" width="116" height="48" rx="12" fill="#1E293B" stroke="#FBBF24"/>
+    <text x="525" y="455" fill="#FDE68A">Help</text>
+    <text x="622" y="455" fill="#64748B">-></text>
+    <rect x="658" y="424" width="158" height="48" rx="12" fill="#1E293B" stroke="#C084FC"/>
+    <text x="689" y="455" fill="#E9D5FF">Follow up</text>
+    <text x="836" y="455" fill="#64748B">-></text>
+    <rect x="872" y="424" width="154" height="48" rx="12" fill="#1E293B" stroke="#FB7185"/>
+    <text x="902" y="455" fill="#FFE4E6">Impact</text>
+  </g>
+</svg>

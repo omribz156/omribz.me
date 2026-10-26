@@ -7,10 +7,11 @@ import Datetime from "@/components/Datetime.astro";
 import EditPost from "@/components/EditPost.astro";
 import Footer from "@/components/Footer.astro";
 import Header from "@/components/Header.astro";
-import NewsletterForm from "@/components/NewsletterForm.astro";
+import EmailUpdates from "@/components/EmailUpdates.astro";
 import ShareLinks from "@/components/ShareLinks.astro";
 import StructuredData from "@/components/StructuredData.astro";
 import Tag from "@/components/Tag.astro";
+import SafeEmbeds from "@/components/SafeEmbeds.astro";
 import { SITE } from "@/config";
 import Layout from "@/layouts/Layout.astro";
 import { getPath } from "@/utils/getPath";
@@ -152,7 +153,7 @@ const wordCount = (post.body ?? "").split(/\s+/).length;
       <Content />
     </article>
 
-    <NewsletterForm />
+    <EmailUpdates />
 
     <hr class="my-8 border-dashed" />
 
@@ -217,6 +218,7 @@ const wordCount = (post.body ?? "").split(/\s+/).length;
       }
     </div>
   </main>
+  <SafeEmbeds />
   <Footer />
 </Layout>
 
@@ -377,117 +379,6 @@ const wordCount = (post.body ?? "").split(/\s+/).length;
   }
   setupKeyboardNavigation();
 
-  /** Process YouTube and Twitter embeds */
-  function processEmbeds() {
-    const article = document.querySelector("#article");
-    if (!article) return;
-
-    // Look for YouTube embeds
-    const youtubeEmbedRegex = /\{% youtube (https:\/\/[^\s]+|[a-zA-Z0-9_-]+) %\}/g;
-    
-    let foundYoutubeEmbeds = false;
-    
-    // Helper to extract a YouTube video ID from various URL formats
-    const extractYouTubeId = (input) => {
-      let videoId = input;
-      try {
-        if (videoId.includes("youtube.com/watch")) {
-          const url = new URL(videoId);
-          videoId = url.searchParams.get("v") || "";
-        } else if (videoId.includes("youtu.be/")) {
-          videoId = videoId.split("youtu.be/")[1]?.split("?")[0] || "";
-        } else if (videoId.includes("youtube.com/embed/")) {
-          videoId = videoId.split("youtube.com/embed/")[1]?.split("?")[0] || "";
-        }
-      } catch (_) {
-        // If URL parsing fails, fall back to the raw input
-      }
-      return videoId;
-    };
-
-    // 1) Pre-pass: replace whole-paragraph shortcodes (most common case)
-    const pNodes = article.querySelectorAll("p");
-    pNodes.forEach((p) => {
-      const text = (p.textContent || "").trim();
-      const ytMatch = text.match(/\{% youtube (https:\/\/[^\s]+|[a-zA-Z0-9_-]+) %\}/);
-
-      if (ytMatch && ytMatch[1]) {
-        foundYoutubeEmbeds = true;
-        const videoId = extractYouTubeId(ytMatch[1]);
-        const container = document.createElement("div");
-        container.className = "youtube-embed-container";
-        container.innerHTML = `
-          <iframe
-            width="560"
-            height="315"
-            src="https://www.youtube.com/embed/${videoId}"
-            title="YouTube video player"
-            frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowfullscreen
-          ></iframe>
-        `;
-        p.replaceWith(container);
-      }
-    });
-
-    // 2) Fallback: process any remaining text nodes that still contain shortcodes
-    const walker = document.createTreeWalker(
-      article,
-      NodeFilter.SHOW_TEXT,
-      null,
-      false,
-    );
-
-    const textNodes = [];
-    let node;
-    while ((node = walker.nextNode())) {
-      textNodes.push(node);
-    }
-
-    textNodes.forEach((textNode) => {
-      let content = textNode.textContent;
-      let hasChanges = false;
-
-      // Process YouTube embeds
-      content = content.replace(youtubeEmbedRegex, (match, videoId) => {
-        foundYoutubeEmbeds = true;
-        hasChanges = true;
-        videoId = extractYouTubeId(videoId);
-
-        return `<div class="youtube-embed-container">
-            <iframe
-              width="560"
-              height="315"
-              src="https://www.youtube.com/embed/${videoId}"
-              title="YouTube video player"
-              frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen
-            ></iframe>
-          </div>`;
-      });
-
-      if (hasChanges) {
-        // Replace the text node with HTML content
-        const tempDiv = document.createElement("div");
-        tempDiv.innerHTML = content;
-
-        // Replace the text node with the new HTML elements
-        const parent = textNode.parentNode;
-        while (tempDiv.firstChild) {
-          parent.insertBefore(tempDiv.firstChild, textNode);
-        }
-        parent.removeChild(textNode);
-      }
-    });
-  }
-
-  // Run the embed processing
-  processEmbeds();
-  
-  // Also run after astro navigation
-  document.addEventListener("astro:page-load", processEmbeds);
 </script>
 
 <style>

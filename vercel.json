@@ -89,7 +89,29 @@
         },
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self' https://omribz.me https://*.vercel.app https://platform.twitter.com https://syndication.twitter.com https://player.vimeo.com https://vimeo.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: data: https://omribz.me https://*.vercel.app https://platform.twitter.com https://cdn.syndication.twimg.com https://player.vimeo.com https://vercel.live https://va.vercel-scripts.com; style-src 'self' 'unsafe-inline' https://omribz.me https://*.vercel.app https://platform.twitter.com; img-src 'self' data: https: blob: https://ghchart.rshah.org; font-src 'self' https://omribz.me https://*.vercel.app; connect-src 'self' https://omribz.me https://*.vercel.app https://platform.twitter.com https://player.vimeo.com https://vimeo.com https://vitals.vercel-insights.com https://va.vercel-scripts.com; media-src 'self' https://omribz.me https://*.vercel.app https://player.vimeo.com https://vimeo.com; object-src 'none'; frame-ancestors 'none'; frame-src https://platform.twitter.com https://syndication.twitter.com https://player.vimeo.com https://vercel.live https://www.youtube.com https://youtube.com https://*.youtube.com https://www.youtube-nocookie.com https://*.youtube-nocookie.com; worker-src 'self' blob:"
+          "value": "default-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'; frame-ancestors 'none'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://platform.twitter.com https://cdn.syndication.twimg.com https://va.vercel-scripts.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://platform.twitter.com https://syndication.twitter.com https://vitals.vercel-insights.com https://va.vercel-scripts.com; frame-src https://platform.twitter.com https://syndication.twitter.com https://www.youtube-nocookie.com https://player.vimeo.com; media-src 'self'; worker-src 'self' blob:"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+        }
+      ]
+    },
+    {
+      "source": "/sw.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
         }
       ]
     }

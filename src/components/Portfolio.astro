@@ -1,0 +1,193 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "./Header.astro";
+import Footer from "./Footer.astro";
+import PortfolioImageViewer from "./PortfolioImageViewer.astro";
+import IconArrowRight from "@/assets/icons/IconArrowRight.svg";
+import IconGitHub from "@/assets/icons/IconGitHub.svg";
+import IconMail from "@/assets/icons/IconMail.svg";
+import { portfolio, projects, contributions, contributionEvidence } from "@/data/portfolio";
+import type { Locale } from "@/utils/i18n";
+import { getImage } from "astro:assets";
+import researchIllustration from "../../public/portfolio/research-illustration.png";
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const copy = portfolio[locale];
+const researchImage = await getImage({ src: researchIllustration, width: 288, format: "webp" });
+const media: Record<string, { src: string; width: number; height: number; alt: string; caption: string }> = {
+  hachozeh: { src: "/portfolio/hachozeh.jpg", width: 1313, height: 1235, alt: copy.hachozehAlt, caption: copy.hachozehCaption },
+  "oss-supporter": { src: "/portfolio/oss-supporter-banner.svg", width: 1200, height: 630, alt: copy.ossAlt, caption: copy.ossCaption },
+  "runtime-radar": { src: "/portfolio/runtime-radar.png", width: 342, height: 624, alt: copy.radarAlt, caption: copy.radarCaption },
+  "alon-porat": { src: "/portfolio/alon-porat.jpg", width: 1298, height: 1166, alt: copy.alonAlt, caption: copy.alonCaption },
+};
+---
+
+<Layout title={`${copy.title} | ${locale === "he" ? "עומרי בן צבי" : "Omri Ben Zvi"}`} description={copy.description}>
+  <Header />
+  <main id="main-content" class="portfolio" data-pagefind-body>
+    <section class="introduction" aria-labelledby="portfolio-title">
+      <div class="intro-byline"><p class="eyebrow">{copy.eyebrow}</p><img src="/omri-avatar.jpg" width="48" height="48" alt={locale === "he" ? "עומרי בן צבי" : "Omri Ben Zvi"} /></div>
+      <h1 id="portfolio-title">{copy.title}</h1>
+      <p class="lead">{copy.intro}</p>
+      <p class="background">{copy.background}</p>
+      <div class="intro-links">
+        <div>
+          <a class="pdf-link" href="/portfolio/Omri_Ben_Zvi_Portfolio.pdf" download>
+            {copy.pdf}<span aria-hidden="true">↓</span>
+          </a>
+          <small>{copy.pdfNote}</small>
+        </div>
+        <a class="contact-link" href="mailto:omribz156@gmail.com"><IconMail />{copy.email}</a>
+      </div>
+    </section>
+
+    <nav class="project-index" aria-label={copy.index}>
+      {projects.map((project, i) => <a href={`#${project.id}`}><span aria-hidden="true">0{i + 1}</span><bdi>{project.name[locale]}</bdi></a>)}
+    </nav>
+
+    <section class="projects" aria-label={copy.selected}>
+      {projects.map((project, i) => (
+        <article id={project.id} class="project">
+          <div class="project-meta"><p class="eyebrow">0{i + 1} / {project.category[locale]}</p><span class="status">{project.status[locale]}</span></div>
+          <div class="project-heading">
+            <h2><bdi>{project.name[locale]}</bdi></h2>
+            {project.symbol && <img class="project-symbol" src={project.id === "security-research-harness" ? researchImage.src : project.symbol.src} width="72" height="72" loading="lazy" alt={project.symbol.alt[locale]} />}
+          </div>
+          <p class="summary">{project.summary[locale]}</p>
+          {media[project.id] && (
+            <figure class="project-image">
+              <a href={media[project.id].src} data-portfolio-image data-astro-reload aria-haspopup="dialog" aria-label={`${copy.snapshot}: ${project.name[locale]}`}>
+                <img src={media[project.id].src} width={media[project.id].width} height={media[project.id].height} loading="lazy" alt={media[project.id].alt} />
+              </a>
+              <figcaption>{media[project.id].caption}</figcaption>
+            </figure>
+          )}
+          <div class="project-story"><h3>{copy.role}</h3><p>{project.role[locale]}</p></div>
+          {project.id === "hachozeh" && (
+            <div class="system-map" aria-label={locale === "he" ? "מבנה המערכת" : "System structure"}>
+              <div><strong>{locale === "he" ? "ליבת המסחר" : "Trading core"}</strong><span>{locale === "he" ? "תמחור · יתרות · יומן חשבונאי" : "Pricing · Balances · Ledger"}</span></div>
+              <div><strong>Seer</strong><span>{locale === "he" ? "הצעות לשווקים" : "Market proposals"}</span></div>
+              <div><strong><bdi dir="ltr">Oracle / Horizon</bdi></strong><span>{locale === "he" ? "ראיות · מחזור חיים" : "Evidence · Lifecycle"}</span></div>
+            </div>
+          )}
+          {project.id === "oss-supporter" && (
+            <div class="contributions">
+              <div class="impact"><div><strong>{contributionEvidence.mergedPRs}</strong><span>{copy.impact}</span></div><div><strong>{contributionEvidence.repositories}</strong><span>{copy.repos}</span></div></div>
+              <small>{copy.verified}</small>
+              <a class="evidence-link" href={contributionEvidence.href}>{copy.source}<IconArrowRight /></a>
+              <ul aria-label={copy.contribution}>{contributions.map(item => <li><a href={item.href}><bdi>{item.name}</bdi><IconArrowRight /></a><p>{item.text[locale]}</p></li>)}</ul>
+            </div>
+          )}
+          <details><summary>{copy.detail}</summary><p>{project.detail[locale]}</p></details>
+          <ul class="stack" aria-label={locale === "he" ? "טכנולוגיות ותחומים" : "Technologies and practices"}>{project.stack.map(item => <li><bdi>{item}</bdi></li>)}</ul>
+          <div class="project-links">{project.links.map(link => <a href={link.href} data-analytics-event="portfolio_project_click" data-analytics-label={project.id} data-analytics-target={link.href}>{link.label[locale]}<IconArrowRight /></a>)}</div>
+        </article>
+      ))}
+    </section>
+
+    <section class="method" aria-labelledby="method-title">
+      <h2 id="method-title">{copy.method}</h2>
+      <p>{copy.methodText}</p>
+      <p>{copy.methodAgents}</p>
+      <p>{copy.methodLearning}</p>
+      <p>{copy.compatibility}</p>
+      <a href="https://github.com/omribz156/vault"><IconGitHub />{copy.vault}<IconArrowRight /></a>
+    </section>
+
+    <section class="contact" aria-labelledby="contact-title">
+      <h2 id="contact-title">{copy.contactTitle}</h2>
+      <p>{copy.contactText}</p>
+      <div class="project-links"><a href="mailto:omribz156@gmail.com"><IconMail /><bdi>omribz156@gmail.com</bdi></a><a href="https://www.linkedin.com/in/omri-ben-zvi/">LinkedIn<IconArrowRight /></a></div>
+    </section>
+  </main>
+  <PortfolioImageViewer locale={locale} />
+  <Footer />
+</Layout>
+
+<style>
+  .portfolio { width: 100%; max-width: 768px; margin-inline: auto; padding: 0 16px; letter-spacing: 0; }
+  .portfolio section { max-width: none; padding-inline: 0; }
+  .introduction { padding-block: 48px 32px; }
+  .intro-byline { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+  .intro-byline img { width: 48px; height: 48px; border-radius: 50%; }
+  .eyebrow { font-size: 12px; color: var(--accent); margin: 0; }
+  h1 { font-size: 40px; font-weight: 700; line-height: 1.2; margin: 16px 0 20px; }
+  .lead { font-size: 21px; line-height: 1.5; max-width: 620px; text-wrap: pretty; }
+  .background { margin-top: 20px; max-width: 670px; }
+  p { font-size: 17px; line-height: 1.75; text-wrap: pretty; font-family: Arial, "Helvetica Neue", sans-serif; }
+  .eyebrow, .status, .contributions p { font-family: inherit; }
+  .background, .secondary { color: var(--foreground); opacity: .85; }
+  small, figcaption, .status { color: var(--foreground); }
+  a { text-underline-offset: 5px; }
+  a:hover { color: var(--accent); }
+  a:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 5px; }
+  .intro-links { display: flex; flex-wrap: wrap; align-items: start; gap: 24px 36px; margin-top: 28px; }
+  .intro-links a { display: inline-flex; align-items: center; gap: 12px; font-size: 14px; }
+  .pdf-link { color: var(--accent); border-bottom: 1px solid currentColor; padding-bottom: 6px; }
+  .contact-link { padding-top: 3px; }
+  small { display: block; font-size: 14px; line-height: 1.7; margin-top: 8px; }
+  svg { width: 18px; height: 18px; flex-shrink: 0; }
+  :global([dir="rtl"]) .project-links svg:last-child, :global([dir="rtl"]) .contributions a svg, :global([dir="rtl"]) .method a svg:last-child { transform: scaleX(-1); }
+  .project-index { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 24px; padding-block: 22px; border-block: 1px solid var(--border); }
+  .project-index a { display: flex; align-items: baseline; gap: 8px; font-size: 12px; }
+  .project-index span { opacity: .45; font-size: 10px; }
+  .project { padding-block: 36px; border-bottom: 1px solid var(--border); scroll-margin-top: 24px; }
+  .project-meta { display: flex; flex-wrap: wrap; gap: 10px 24px; align-items: center; justify-content: space-between; }
+  .status { font-size: 14px; line-height: 1.7; }
+  h2 { font-size: 28px; font-weight: 700; line-height: 1.3; margin-block: 14px 18px; overflow-wrap: anywhere; }
+  .project-heading { display: flex; align-items: center; justify-content: space-between; min-height: 72px; gap: 24px; margin-block: 16px; }
+  .project-heading h2 { min-width: 0; margin: 0; }
+  .project-symbol { display: block; width: 72px; height: 72px; flex-shrink: 0; object-fit: contain; }
+  .summary { font-size: 19px; margin: 0; }
+  .system-map { display: grid; grid-template-columns: 1.1fr .8fr 1fr; gap: 16px; border-block: 1px solid var(--border); padding-block: 20px; margin-block: 24px; }
+  .system-map strong { font-size: 14px; font-weight: 700; }
+  .system-map span { display: block; font-size: 14px; margin-top: 8px; line-height: 1.6; }
+  .project-story h3 { font-size: 14px; margin-bottom: 8px; font-weight: 700; }
+  .project-story { margin-top: 24px; }
+  details { margin-block: 16px; }
+  summary { font-size: 13px; cursor: pointer; color: var(--accent); padding-block: 6px; }
+  details p { padding-top: 10px; opacity: .8; }
+  .stack { display: flex; flex-wrap: wrap; gap: 8px 20px; list-style: none; padding: 0; font-size: 13px; }
+  .project-links { display: flex; flex-wrap: wrap; gap: 16px 28px; margin-top: 16px; }
+  .project-links a, .method a { display: inline-flex; align-items: center; gap: 10px; font-size: 13px; color: var(--accent); }
+  .project-links a:hover, .method a:hover { text-decoration: underline; }
+  .impact { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding-block: 16px 8px; }
+  .impact strong { display: block; font-size: 44px; line-height: 1.2; font-weight: 600; }
+  .impact span { font-size: 14px; display: block; margin-top: 8px; }
+  .contributions ul { list-style: none; padding: 0; margin: 24px 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .contributions li { border-top: 1px solid var(--border); padding-top: 12px; }
+  .contributions a { font-size: 14px; display: flex; align-items: start; justify-content: space-between; gap: 8px; }
+  .contributions p { font-size: 14px; line-height: 1.65; margin-top: 10px; }
+  figure { margin: 0; }
+  .project-image { margin-block: 24px; }
+  .project-image a { display: flex; justify-content: center; }
+  .project-image img { display: block; width: auto; height: auto; max-width: 100%; max-height: 400px; object-fit: contain; border: 1px solid var(--border); border-radius: 6px; }
+  .project-image figcaption { text-align: center; }
+  .evidence-link { display: inline-flex; align-items: center; gap: 8px; margin-top: 12px; font-size: 12px; color: var(--accent); }
+  figcaption { font-size: 14px; margin-top: 10px; line-height: 1.7; }
+  .portfolio:lang(he) :is(figcaption, small, .status, .eyebrow, .system-map, .impact span, .contributions p, .project-story h3, summary) { font-family: Arial, "Helvetica Neue", sans-serif; letter-spacing: 0; }
+  .portfolio:lang(he) :is(figcaption, small, .status, .eyebrow, summary) { font-size: 14px; }
+  .method { padding-block: 36px; border-bottom: 1px solid var(--border); }
+  .method h2, .contact h2 { font-size: 23px; }
+  .method p + p { margin-top: 16px; }
+  .method a { margin-top: 20px; }
+  .contact { padding-block: 32px 64px; }
+  @media (max-width: 600px) {
+    .introduction { padding-top: 32px; }
+    h1 { font-size: 34px; }
+    .lead { font-size: 19px; }
+    h2 { font-size: 25px; }
+    .project-index { grid-template-columns: 1fr; }
+    .project-heading { min-height: 64px; gap: 16px; }
+    .project-symbol { width: 64px; height: 64px; }
+    .project { padding-block: 32px; }
+    .project-meta { align-items: start; flex-direction: column; gap: 4px; }
+    .system-map { grid-template-columns: 1fr; gap: 14px; }
+    .system-map div { display: flex; justify-content: space-between; gap: 16px; }
+    .system-map span { margin-top: 0; text-align: end; }
+    .contributions ul { grid-template-columns: 1fr; gap: 14px; }
+    .contributions p { margin-top: 4px; }
+    .contact .project-links { flex-direction: column; align-items: start; }
+  }
+</style>

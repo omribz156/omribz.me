@@ -1,0 +1,5 @@
+<script>
+  import { processEmbeds } from "@/utils/processEmbeds";
+  processEmbeds();
+  document.addEventListener("astro:page-load", () => processEmbeds());
+</script>

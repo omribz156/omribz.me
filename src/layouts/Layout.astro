@@ -17,6 +17,8 @@ export interface Props {
   pubDatetime?: Date;
   modDatetime?: Date | null;
   scrollSmooth?: boolean;
+  noindex?: boolean;
+  analytics?: boolean;
 }
 
 const {
@@ -29,6 +31,8 @@ const {
   pubDatetime,
   modDatetime,
   scrollSmooth = false,
+  noindex = false,
+  analytics = true,
 } = Astro.props;
 
 const socialImageURL = new URL(ogImage, Astro.url);
@@ -55,6 +59,7 @@ const hebrewURL = new URL(localizedPath(Astro.url.pathname, "he"), Astro.url);
     <link rel="alternate" hreflang="he" href={hebrewURL} />
     <link rel="alternate" hreflang="x-default" href={englishURL} />
     <meta name="generator" content={Astro.generator} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
 
     <!-- General Meta Tags -->
     <title>{title}</title>
@@ -121,12 +126,10 @@ const hebrewURL = new URL(localizedPath(Astro.url.pathname, "he"), Astro.url);
 
     <script is:inline src="/toggle-theme.js"></script>
     
-    <!-- Twitter Widget Script -->
-    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
   </head>
   <body>
     <slot />
-    <Analytics />
+    {analytics && <Analytics />}
   </body>
 </html>
 

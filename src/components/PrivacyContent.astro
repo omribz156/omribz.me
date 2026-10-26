@@ -1,0 +1,28 @@
+---
+const { locale = "en" } = Astro.props;
+---
+{locale === "he" ? (
+  <>
+    <h1>פרטיות ועדכונים במייל</h1>
+    <p>האתר מנוהל על ידי עומרי בן צבי. אפשר לבקש במייל עדכונים מזדמנים על פוסטים ופרויקטים.</p>
+    <h2>הרשמה והסרה</h2>
+    <p>הקישור באתר פותח טיוטה בתוכנת המייל. פתיחת הקישור לא שולחת הודעה ולא מצרפת אתכם לרשימת תפוצה. רק הודעה שתבחרו לשלוח תגיע לתיבת ה-Gmail שלי, ובה כתובת השולח ותוכן הבקשה. הבקשות מטופלות ידנית; אין באתר טופס הרשמה או מאגר מנויים.</p>
+    <p>אפשר לבקש הסרה מרשימת התפוצה או מחיקת הפרטים בכל עת דרך <a href="mailto:omribz156@gmail.com?subject=Newsletter%20removal">omribz156@gmail.com</a>. בכל דיוור ייכלל קישור הסרה או כתובת לפנייה. הסרה מדיוור תישמר כדי למנוע הוספה חוזרת בטעות.</p>
+    <h2>שירותים חיצוניים</h2>
+    <p>האתר מאוחסן ב-Vercel ומשתמש ב-Web Analytics וב-Speed Insights למדידת שימוש וביצועים. כתובת האימייל והשם אינם נשלחים כאירועי אנליטיקה.</p>
+    <p>בקשות לעדכונים והתכתבות נשמרות ב-Gmail לצורך טיפול בפנייה. האתר אינו מעביר בקשות לשירות הרשמה אוטומטי. עדכונים יישלחו רק למי שביקשו אותם; בקשות הסרה יכובדו לפני כל דיוור.</p>
+    <p>השירותים עשויים לעבד מידע מחוץ לישראל. תכנים משובצים, אם קיימים, עשויים ליצור חיבור לספק החיצוני שלהם.</p>
+  </>
+) : (
+  <>
+    <h1>Privacy and Email Updates</h1>
+    <p>This site is operated by Omri Ben Zvi. You can request occasional updates about posts and projects by email.</p>
+    <h2>Subscriptions and Removal</h2>
+    <p>The email link opens a draft in your email app. Opening it does not send anything or subscribe you. Only a message you choose to send reaches my Gmail inbox, including your sender address and request. Requests are handled manually; this site has no signup form or subscriber database.</p>
+    <p>To unsubscribe or request deletion, email <a href="mailto:omribz156@gmail.com?subject=Newsletter%20removal">omribz156@gmail.com</a>. Every update will include an unsubscribe link or removal contact. An opt-out record is retained to avoid accidental re-subscription.</p>
+    <h2>Service Providers</h2>
+    <p>Vercel hosts the site. Web Analytics and Speed Insights measure usage and performance. Your name and email are not included in custom analytics events.</p>
+    <p>Update requests and correspondence are retained in Gmail to handle your request. The site does not forward requests to an automated subscription service. Updates are sent only to people who requested them; removal requests are honored before any mailing.</p>
+    <p>These providers may process information outside Israel. Embedded content, where present, can connect to its external provider.</p>
+  </>
+)}

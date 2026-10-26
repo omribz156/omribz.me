@@ -9,6 +9,7 @@ import Hr from "@/components/Hr.astro";
 import LinkButton from "@/components/LinkButton.astro";
 import Socials from "@/components/Socials.astro";
 import StructuredData from "@/components/StructuredData.astro";
+import PortfolioPreview from "@/components/PortfolioPreview.astro";
 import { SITE, SOCIALS } from "@/config";
 import Layout from "@/layouts/Layout.astro";
 import getSortedPosts from "@/utils/getSortedPosts";
@@ -59,6 +60,9 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
       </div>
     </section>
 
+    <Hr />
+
+    <PortfolioPreview locale="he" />
     <Hr />
 
     {
