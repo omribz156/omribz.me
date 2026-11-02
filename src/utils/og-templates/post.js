@@ -106,7 +106,8 @@ import loadGoogleFonts from "../loadGoogleFont";
 export default async (post) => {
   const isHebrew = post.data.lang === "he";
   const fontFamily = isHebrew ? "Noto Sans Hebrew" : "IBM Plex Mono";
-  const title = isHebrew ? [...post.data.title].reverse().join("") : post.data.title;
+  // Satori handles bidirectional text; preserve the logical character order.
+  const title = post.data.title;
 
   return satori(
     {
@@ -127,6 +128,7 @@ export default async (post) => {
             props: {
               style: {
                 position: "absolute",
+                zIndex: 0,
                 top: "-1px",
                 right: "-1px",
                 border: "4px solid #000",
@@ -147,6 +149,7 @@ export default async (post) => {
               style: {
                 border: "4px solid #000",
                 background: "#fefbfb",
+                zIndex: 1,
                 borderRadius: "4px",
                 display: "flex",
                 justifyContent: "center",

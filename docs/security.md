@@ -81,6 +81,27 @@ Astro/Sharp and integrations updated; unused vulnerable prompt/frontmatter depen
 
 Prepared workflows add weekly dependency audits, Gitleaks, CodeQL, pinned Actions, dependency-update PRs, and six-hourly read-only site checks. They do not run until published/merged. Earlier checks reported dependency alerts, security-fix PRs, and protected main; recheck at release. Add security/CodeQL to required checks only after successful runs.
 
+## Satori Dependency Fix: 2026-11-02
+
+The dependency-security candidate upgrades Satori from 0.18.4 to 0.63.2 for
+[GHSA-wx4j-mvgx-mqwp](https://github.com/advisories/GHSA-wx4j-mvgx-mqwp).
+Satori pins fflate 0.7.3, so the targeted `fflate@>=0.7.0 <0.7.5` override
+keeps it and the font parser on 0.7.5 for
+[GHSA-px8p-9vwx-vf98](https://github.com/advisories/GHSA-px8p-9vwx-vf98).
+Retain this floor until upstream no longer resolves an affected fflate version.
+
+The renderer now handles Hebrew word/glyph order; do not reverse title characters
+before rendering. Both OG templates explicitly put the content above the decorative
+background so the newer stacking behavior does not obscure text. Inspect EN/HE
+cards when upgrading Satori, including punctuation and foreground contrast.
+
+Local candidate verification: frozen install, audit (no known vulnerabilities),
+format/lint, 3 unit tests, publication boundaries, production build/type checks,
+and 52 desktop/mobile browser tests passed. Site and EN/HE post OG generators
+produced visually inspected 1200x630 PNGs. The existing 3 type hints and Markdown
+deprecation notice remain. This is PR validation, not production verification;
+the website session handles integration and deployment.
+
 ## Owner Account Checklist
 
 Not claims of completion:

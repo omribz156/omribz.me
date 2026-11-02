@@ -21,6 +21,7 @@ export default async () => {
             props: {
               style: {
                 position: "absolute",
+                zIndex: 0,
                 top: "-1px",
                 right: "-1px",
                 border: "4px solid #000",
@@ -41,6 +42,7 @@ export default async () => {
               style: {
                 border: "4px solid #000",
                 background: "#fefbfb",
+                zIndex: 1,
                 borderRadius: "4px",
                 display: "flex",
                 justifyContent: "center",
